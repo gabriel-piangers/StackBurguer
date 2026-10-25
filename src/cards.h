@@ -7,34 +7,10 @@
 #define CARD_W 130
 #define CARD_H 180
 #define CARD_TITLE_SIZE 18
-#define CARD_TITLE_PAD 5
-#define CARD_HEADER_H (CARD_TITLE_SIZE + CARD_TITLE_PAD*2)
+#define CARD_PAD 6
+#define CARD_HEADER_H (CARD_TITLE_SIZE + CARD_PAD*2)
 #define CARD_PICKUP_SCALE 1.2f
 #define MAX_CARDS 50
-
-// Enums
-enum Ingredient {
-    BREAD_B,
-    BREAD_T,
-    KETCHUP,
-    MUSTARD,
-    PICKLES,
-    LETTUCE,
-    TOMATO,
-    TOMATO_SLICES,
-    ONIONS,
-    ONIONS_SLICES,
-    SWISS_CHEESE,
-    CHEDDAR,
-    HAMBURGUER_RAW,
-    HAMBURGUER,
-    BACON_RAW,
-    BACON,
-    EGG_RAW,
-    EGG,
-    GRILL,
-    CUTTING
-};
 
 // Structs
 struct Card{
@@ -59,6 +35,7 @@ struct Card{
     // Getters
     std::string title();
     Color bgColor();
+    Texture2D getTexture();
     float eventTime();
     std::function<void(Card*)> event();
     Rectangle getRec();
@@ -78,6 +55,7 @@ struct Card{
 struct CardParams {
     std::string title;
     Color bgColor;
+    Texture2D& texture;
     float eventTime;
     std::function<void(Card*)> event;
 };
@@ -85,61 +63,61 @@ struct CardParams {
 // Constants
 const CardParams cParams[] = {
     { // BREAD_B
-        "Bottom Bread", BEIGE, 0.0f, [](Card* c){}
+        "Bottom Bread", BEIGE, BREAD_B_TEXTURE, 0.0f, [](Card* c){}
     },
     { // BREAD_T
-        "Top Bread", BEIGE, 0.0f, [](Card* c){}
+        "Top Bread", BEIGE, BREAD_T_TEXTURE, 0.0f, [](Card* c){}
     },
     { // KETCHUP
-        "Ketchup", RED, 0.0f, [](Card* c){}
+        "Ketchup", RED, KETCHUP_TEXTURE, 0.0f, [](Card* c){}
     },
     { // MUSTARD 
-        "Mustard", YELLOW, 0.0f, [](Card* c){}
+        "Mustard", YELLOW, MUSTARD_TEXTURE, 0.0f, [](Card* c){}
     },
     { // PICKLES
-        "Pickles", LIME, 0.0f, [](Card* c){}
+        "Pickles", LIME, PICKLES_TEXTURE, 0.0f, [](Card* c){}
     },
     { // LETTUCE,
-        "Lettuce", GREEN, 0.0f, [](Card* c){}
+        "Lettuce", GREEN, LETTUCE_TEXTURE, 0.0f, [](Card* c){}
     },
     { // TOMATO    
-        "Tomato", RED, 0.0f, [](Card* c){}
+        "Tomato", RED, TOMATO_TEXTURE, 0.0f, [](Card* c){}
     },
     { // TOMATO_SLICES   
-        "Sliced Tomato", RED, 0.0f, [](Card* c){}
+        "Sliced Tomato", RED, TOMATO_SLICES_TEXTURE, 0.0f, [](Card* c){}
     }, 
     { // ONIONS 
-        "Onion", LIGHTGRAY, 0.0f, [](Card* c){}
+        "Onion", LIGHTGRAY, ONIONS_TEXTURE, 0.0f, [](Card* c){}
     },
     { // ONIONS_SLICES
-        "Sliced Onion", LIGHTGRAY, 0.0f, [](Card* c){}
+        "Sliced Onion", LIGHTGRAY, ONIONS_SLICES_TEXTURE, 0.0f, [](Card* c){}
     },
     { // SWISS_CHEESE
-        "Swiss Cheese", GOLD, 0.0f, [](Card* c){}
+        "Swiss Cheese", GOLD, SWISS_CHEESE_TEXTURE, 0.0f, [](Card* c){}
     },
     { // CHEDDAR 
-        "Cheddar", ORANGE, 0.0f, [](Card* c){}
+        "Cheddar", ORANGE, CHEDDAR_TEXTURE, 0.0f, [](Card* c){}
     },
     { // HAMBURGUER_RAW
-        "Hamburguer", PINK, 0.0f, [](Card* c){}
+        "Hamburguer", PINK, HAMBURGUER_RAW_TEXTURE, 0.0f, [](Card* c){}
     },
     { // HAMBURGUER,
-        "Hamburguer", DARKBROWN, 0.0f, [](Card* c){}
+        "Hamburguer", DARKBROWN, HAMBURGUER_TEXTURE, 0.0f, [](Card* c){}
     },
     { // BACON_RAW
-        "Bacon", PINK, 0.0f, [](Card* c){}
+        "Bacon", PINK, BACON_RAW_TEXTURE, 0.0f, [](Card* c){}
     },
     { // BACON
-        "Bacon", DARKBROWN, 0.0f, [](Card* c){}
+        "Bacon", DARKBROWN, BACON_TEXTURE, 0.0f, [](Card* c){}
     },
     { // EGG_RAW
-        "Egg", WHITE, 0.0f, [](Card* c){}
+        "Egg", LIGHTGRAY, EGG_RAW_TEXTURE, 0.0f, [](Card* c){}
     },
     { // EGG_FRIED
-        "Fried Egg", WHITE, 0.0f, [](Card* c){}
+        "Fried Egg", LIGHTGRAY, EGG_TEXTURE, 0.0f, [](Card* c){}
     },
     { // GRILL
-        "Grill", GRAY, 3.0f, [](Card* c){
+        "Grill", GRAY, GRILL_TEXTURE, 3.0f, [](Card* c){
             switch (c->type) {
                 case HAMBURGUER_RAW:
                     c->type = HAMBURGUER;
@@ -156,7 +134,7 @@ const CardParams cParams[] = {
         }
     },
     { // CUTTING
-        "Cutting board", BROWN, 1.0f, [](Card* c){
+        "Cutting board", BROWN, CUTTING_TEXTURE, 1.0f, [](Card* c){
             switch (c->type) {
                 case TOMATO:
                     c->type = TOMATO_SLICES;
@@ -177,7 +155,5 @@ void UpdateCards();
 void DrawCards();
 bool InsertCard(Ingredient item, Vector2 pos);
 Card* GetCollisionCards(Card* c);
-void InitSlots();
-void DrawSlots();
 
 #endif

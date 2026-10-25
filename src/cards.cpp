@@ -60,9 +60,18 @@ void Card::draw() {
     if(!this->active) return;
     float scale = picked ? CARD_PICKUP_SCALE : 1.0f;
     Rectangle rec = getRec();
+
     DrawRectanglePro(rec, {0, 0}, 0, this->bgColor());
-    DrawText(this->title().c_str(), rec.x + CARD_TITLE_PAD, rec.y + CARD_TITLE_PAD, CARD_TITLE_SIZE*scale, BLACK);
-    DrawLine(rec.x, rec.y + (CARD_TITLE_SIZE + 2*CARD_TITLE_PAD)*scale, rec.x + CARD_W*scale, rec.y + (CARD_TITLE_SIZE + 2*CARD_TITLE_PAD)*scale, BLACK);
+
+    // Header
+    DrawText(this->title().c_str(), rec.x + CARD_PAD, rec.y + CARD_PAD, CARD_TITLE_SIZE*scale, BLACK);
+    DrawLine(rec.x, rec.y + (CARD_TITLE_SIZE + 2*CARD_PAD)*scale, rec.x + CARD_W*scale, rec.y + (CARD_TITLE_SIZE + 2*CARD_PAD)*scale, BLACK);
+
+    // Body
+    if(!this->next) {
+        DrawRectangle(rec.x + CARD_PAD*scale, rec.y + (CARD_HEADER_H + CARD_PAD)*scale, (CARD_W - CARD_PAD*2)*scale, (CARD_H - CARD_HEADER_H - CARD_PAD*2)*scale, WHITE);
+        DrawTextureEx(this->getTexture(), {rec.x + (CARD_W - this->getTexture().width)*scale/2, rec.y + (CARD_H + CARD_HEADER_H - this->getTexture().height)*scale/2}, 0.0f, scale, WHITE);
+    }
 }
 
 void Card::update(Card** cPicked) {
@@ -118,6 +127,10 @@ std::string Card::title() {
 
 Color Card::bgColor() {
     return cParams[this->type].bgColor;
+}
+
+Texture2D Card::getTexture() {
+    return cParams[this->type].texture;
 }
 
 float Card::eventTime() {
