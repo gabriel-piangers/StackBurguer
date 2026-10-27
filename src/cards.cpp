@@ -9,18 +9,18 @@ void ResetCards() {
 
 void InitCards() {
     ResetCards();
-    InsertCard(BREAD_B, {200, 200});
-    InsertCard(BREAD_T, {200, 500});
-    InsertCard(CHEDDAR, {400, 200});
-    InsertCard(TOMATO, {600, 200});
-    InsertCard(HAMBURGUER_RAW, {800, 200});
-    InsertCard(BACON_RAW, {1000, 200});
-    InsertCard(LETTUCE, {400, 500});
-    InsertCard(PICKLES, {600, 500});
-    InsertCard(ONIONS, {800, 500});
-    InsertCard(EGG, {1000, 500});
-    InsertCard(GRILL, {1200, 200});
-    InsertCard(CUTTING, {1200, 500});
+    InsertCard(BREAD_B, {200, 700});
+    InsertCard(BREAD_T, {200, 400});
+    InsertCard(CHEDDAR, {400, 700});
+    InsertCard(TOMATO, {600, 700});
+    InsertCard(HAMBURGUER_RAW, {800, 700});
+    InsertCard(BACON_RAW, {1000, 700});
+    InsertCard(LETTUCE, {400, 400});
+    InsertCard(PICKLES, {600, 400});
+    InsertCard(ONIONS, {800, 400});
+    InsertCard(EGG, {1000, 400});
+    InsertCard(GRILL, {1200, 700});
+    InsertCard(CUTTING, {1200, 400});
 }
 
 bool InsertCard(Ingredient item, Vector2 pos) {

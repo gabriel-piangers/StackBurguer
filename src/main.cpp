@@ -1,6 +1,7 @@
 #include <vector>
 #include "constants.h"
 #include "cards.h"
+#include "costumer.h"
 
 using namespace std;
 
@@ -25,6 +26,8 @@ Texture2D EGG_TEXTURE;
 Texture2D GRILL_TEXTURE;
 Texture2D CUTTING_TEXTURE;
 
+Texture2D COSTUMER_TEXTURE;
+
 void LoadTextures() {
     BREAD_B_TEXTURE = LoadTexture("assets/items/Tomato.png");
     BREAD_T_TEXTURE = LoadTexture("assets/items/Tomato.png");
@@ -46,6 +49,7 @@ void LoadTextures() {
     EGG_TEXTURE = LoadTexture("assets/items/Tomato.png");
     GRILL_TEXTURE = LoadTexture("assets/items/Tomato.png");
     CUTTING_TEXTURE = LoadTexture("assets/items/Tomato.png");
+    COSTUMER_TEXTURE = LoadTexture("assets/costumer.png");
 }
 
 void UnloadTextures() {
@@ -69,6 +73,7 @@ void UnloadTextures() {
     UnloadTexture(EGG_TEXTURE);
     UnloadTexture(GRILL_TEXTURE);
     UnloadTexture(CUTTING_TEXTURE);
+    UnloadTexture(COSTUMER_TEXTURE);
 }
 
 int main () {
@@ -77,6 +82,7 @@ int main () {
     SetTargetFPS(60);
     LoadTextures();
     InitCards();
+    InitCostumers();
 
     while (WindowShouldClose() == false) {
         // Update
@@ -86,6 +92,8 @@ int main () {
         BeginDrawing();
             ClearBackground(BLACK);
             DrawRectangleLinesEx(CARD_TABLE, 2, RED);
+            DrawRectangleLinesEx(COSTUMER_DIV, 2, PURPLE);
+            DrawCostumers();
             DrawCards();
         EndDrawing();
     }

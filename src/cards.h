@@ -113,7 +113,7 @@ const CardParams cParams[] = {
     { // EGG_RAW
         "Egg", LIGHTGRAY, EGG_RAW_TEXTURE, 0.0f, [](Card* c){}
     },
-    { // EGG_FRIED
+    { // EGG
         "Fried Egg", LIGHTGRAY, EGG_TEXTURE, 0.0f, [](Card* c){}
     },
     { // GRILL

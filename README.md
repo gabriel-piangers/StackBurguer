@@ -7,6 +7,7 @@ Trabalho final da displina INF01203 - Estruturas de Dados 2026/2, orientado pelo
 
  - `Card`: Lista Duplamente Encadeada
  - `cards`: Lista Contigua Estática (array)
+ - `Recipe`: Lista Encadeada
 
 ## Limitações Conhecidas
 

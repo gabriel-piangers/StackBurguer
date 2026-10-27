@@ -9,7 +9,8 @@
 #define SCREEN_W 1600
 #define SCREEN_H 900
 
-const Rectangle CARD_TABLE = {100, 100, 1400, 700};
+const Rectangle CARD_TABLE = {200, 300, 1200, 600};
+const Rectangle COSTUMER_DIV = {200, 50, 1200, 250};
 
 // Textures
 extern Texture2D BREAD_B_TEXTURE;
@@ -32,6 +33,8 @@ extern Texture2D EGG_RAW_TEXTURE;
 extern Texture2D EGG_TEXTURE;
 extern Texture2D GRILL_TEXTURE;
 extern Texture2D CUTTING_TEXTURE;
+
+extern Texture2D COSTUMER_TEXTURE;
 
 // Enums
 enum Ingredient {
