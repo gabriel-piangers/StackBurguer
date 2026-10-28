@@ -4,6 +4,8 @@
 #include <raylib.h>
 #include <iostream>
 #include <string>
+#include <algorithm>
+#include <cmath>
 #include <functional>
 
 #define SCREEN_W 1600

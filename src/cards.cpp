@@ -1,4 +1,5 @@
 #include "cards.h"
+#include "costumer.h"
 
 Card cards[MAX_CARDS];
 Card* cardPicked = nullptr;
@@ -9,21 +10,21 @@ void ResetCards() {
 
 void InitCards() {
     ResetCards();
-    InsertCard(BREAD_B, {200, 700});
-    InsertCard(BREAD_T, {200, 400});
-    InsertCard(CHEDDAR, {400, 700});
-    InsertCard(TOMATO, {600, 700});
-    InsertCard(HAMBURGUER_RAW, {800, 700});
-    InsertCard(BACON_RAW, {1000, 700});
-    InsertCard(LETTUCE, {400, 400});
-    InsertCard(PICKLES, {600, 400});
-    InsertCard(ONIONS, {800, 400});
-    InsertCard(EGG, {1000, 400});
-    InsertCard(GRILL, {1200, 700});
-    InsertCard(CUTTING, {1200, 400});
+    AddCard(BREAD_B, {200, 700});
+    AddCard(BREAD_T, {200, 400});
+    AddCard(MUSTARD, {400, 700});
+    AddCard(TOMATO, {600, 700});
+    AddCard(HAMBURGUER_RAW, {800, 700});
+    AddCard(BACON_RAW, {1000, 700});
+    AddCard(KETCHUP, {400, 400});
+    AddCard(PICKLES, {600, 400});
+    AddCard(ONIONS, {800, 400});
+    AddCard(EGG_RAW, {1000, 400});
+    AddCard(GRILL, {1200, 700});
+    AddCard(CUTTING, {1200, 400});
 }
 
-bool InsertCard(Ingredient item, Vector2 pos) {
+bool AddCard(Ingredient item, Vector2 pos) {
     for(int i=0; i<MAX_CARDS; i++) {
         if(!cards[i].active) {
             cards[i] = Card(pos, item);
@@ -151,10 +152,22 @@ Rectangle Card::getStackRec(int extraSize) {
 
 // Place doesn't change cPicked to null because this needs to happen after all the cards update
 void Card::place() {
-    Card* cardCol = GetCollisionCards(this);
-    bool valid = this->isPositionValid(cardCol);
-    if(cardCol && valid) cardCol->insert(this);
-    else if(!valid && !this->prev && this->lastPrev) { // Returns to previous state
+    bool valid = true;
+    Costumer costumerCol = GetCollisionCostumer(this->getRec());
+    if(costumerCol.patience > 0.0f) { // Valid collision with Costumer Rec
+        if(costumerCol.order.check(this)) {
+            std::cout << "Score: " << costumerCol.score() << "\n";
+            this->destroy();
+            return;
+        } 
+        valid = false;
+    } else {
+        Card* cardCol = GetCollisionCards(this);
+        valid = this->isPositionValid(cardCol);
+        if(cardCol && valid) cardCol->insert(this);
+    }
+
+    if(!valid && !this->prev && this->lastPrev) { // Returns to previous state
         Card* first = this->lastPrev->propagate([](Card* c, int i) {}, true);
         first->insert(this);
     }
@@ -168,6 +181,7 @@ void Card::place() {
     };
     this->propagate(f);  
 }
+
 
 void Card::pickup(Card** cPicked) {
     this->lastPos = this->pos;
@@ -206,6 +220,13 @@ bool Card::isPositionValid(Card* cardCol) {
     if(colRec.width == rec.width && colRec.height == rec.height 
         && (!cardCol || !this->eventTime())) return true;
     return false;
+}
+
+void Card::destroy() {
+    auto f = [](Card* c, int i) {
+        c->active = false;
+    };
+    this->propagate(f);
 }
 
 Card* Card::propagate(std::function<void(Card*, int)> f, bool reverse) {

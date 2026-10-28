@@ -87,6 +87,7 @@ int main () {
     while (WindowShouldClose() == false) {
         // Update
         UpdateCards();
+        UpdateCostumers();
         
         // Draw
         BeginDrawing();

@@ -19,13 +19,14 @@ struct Recipe {
     int size;
 
     Recipe(std::string s): start(nullptr), size(0) {
-        RecipeItem* prev = nullptr;
+        RecipeItem* prev = (RecipeItem*) malloc(sizeof(RecipeItem));
+        prev->item = BREAD_B;
+        this->start = prev;
         for(int i=0; s[i]!=0; i++) {
             RecipeItem* newItem = (RecipeItem*) malloc(sizeof(RecipeItem));
             newItem->item = charToItem(s[i]);
             newItem->next = nullptr;
-            if(!prev) start = newItem;
-            else prev->next = newItem;
+            prev->next = newItem;
             this->size++;
             prev = newItem;
         }

@@ -47,6 +47,7 @@ struct Card{
     void pickup(Card** cPicked);
     void place();
     void insert(Card* card);
+    void destroy();
     bool isPositionValid(Card* cardCol);
     Card* propagate(std::function<void(Card*, int)> f, bool reverse = false);
 };
@@ -153,7 +154,7 @@ const CardParams cParams[] = {
 void InitCards();
 void UpdateCards();
 void DrawCards();
-bool InsertCard(Ingredient item, Vector2 pos);
+bool AddCard(Ingredient item, Vector2 pos);
 Card* GetCollisionCards(Card* c);
 
 #endif
