@@ -3,6 +3,8 @@
 
 #include "constants.h"
 
-Ingredient charToItem(char c);
+Ingredient CharToItem(char c);
+Ingredient GetUnpreparedItem(Ingredient item);
+float GetCostumerDifficulty(std::string recipe, float patience);
 
 #endif

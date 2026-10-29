@@ -3,6 +3,7 @@
 
 #include "constants.h"
 #include "recipe.h"
+#include "utils.h"
 
 #define COSTUMER_AMOUNT 3
 
@@ -12,9 +13,11 @@ struct Costumer {
     float patience;
     float difficulty;
 
-    Costumer(): pos({0.0f, 0.0f}), order(Recipe("")), patience(0.0f), difficulty(0.0f) {}
+    Costumer():
+        pos({0.0f, 0.0f}), order(Recipe("")), patience(0.0f), difficulty(0.0f) {}
 
-    Costumer(Vector2 _pos, std::string s, int _patience): pos(_pos), order(Recipe(s)), patience(_patience), difficulty(0.0f) {}
+    Costumer(Vector2 _pos, std::string s, int _patience):
+        pos(_pos), order(Recipe(s)), patience(_patience), difficulty(GetCostumerDifficulty(s, _patience)) {}
 
     void draw();
     void update();

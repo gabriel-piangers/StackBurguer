@@ -24,7 +24,7 @@ struct Recipe {
         this->start = prev;
         for(int i=0; s[i]!=0; i++) {
             RecipeItem* newItem = (RecipeItem*) malloc(sizeof(RecipeItem));
-            newItem->item = charToItem(s[i]);
+            newItem->item = CharToItem(s[i]);
             newItem->next = nullptr;
             prev->next = newItem;
             this->size++;

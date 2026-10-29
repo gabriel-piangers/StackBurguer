@@ -40,7 +40,7 @@ void Costumer::update() {
 }
 
 float Costumer::score() {
-    return pow(this->difficulty, 2) / (this->patience/10.0f);
+    return this->difficulty;
 }
 
 Rectangle Costumer::getRec() {
