@@ -45,7 +45,7 @@ struct Card{
     void draw();
     void update(Card** cPicked);
     void pickup(Card** cPicked);
-    void place();
+    void place(Card** cPicked);
     void insert(Card* card);
     void destroy();
     bool isPositionValid(Card* cardCol);

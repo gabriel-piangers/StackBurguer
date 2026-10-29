@@ -36,7 +36,6 @@ bool AddCard(Ingredient item, Vector2 pos) {
 
 void UpdateCards() {
     for(int i=0; i<MAX_CARDS; i++) cards[i].update(&cardPicked);
-    if(cardPicked && !cardPicked->picked) cardPicked = nullptr; // Safely changes picked card
 }
 
 void DrawCards() {
@@ -108,7 +107,7 @@ void Card::update(Card** cPicked) {
     if(prev) return;
 
     if(*cPicked == this && IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-        this->place();
+        this->place(cPicked);
     }
 
     if(picked) {
@@ -150,14 +149,14 @@ Rectangle Card::getStackRec(int extraSize) {
     return (Rectangle) {this->pos.x, this->pos.y, CARD_W, CARD_H + CARD_HEADER_H*(this->size + extraSize - 1)};
 }
 
-// Place doesn't change cPicked to null because this needs to happen after all the cards update
-void Card::place() {
+void Card::place(Card** cPicked) {
     bool valid = true;
     Costumer costumerCol = GetCollisionCostumer(this->getRec());
     if(costumerCol.patience > 0.0f) { // Valid collision with Costumer Rec
         if(costumerCol.order.check(this)) {
             std::cout << "Score: " << costumerCol.score() << "\n";
             this->destroy();
+            *cPicked = nullptr;
             return;
         } 
         valid = false;
@@ -179,7 +178,8 @@ void Card::place() {
             c->pos.y = this->lastPos.y + i*CARD_HEADER_H;
         }
     };
-    this->propagate(f);  
+    this->propagate(f);
+    *cPicked = nullptr;
 }
 
 

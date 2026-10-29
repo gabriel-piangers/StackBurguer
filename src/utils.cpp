@@ -17,9 +17,9 @@ Ingredient charToItem(char c) {
         case 'q':
             return CHEDDAR;
         case 'c':
-            return ONIONS;
+            return ONIONS_SLICES;
         case 't':
-            return TOMATO;
+            return TOMATO_SLICES;
         case 'n':
             return HAMBURGUER;
         case 'o':
