@@ -10,5 +10,3 @@ Trabalho final da displina INF01203 - Estruturas de Dados 2026/2, orientado pelo
  - `Recipe`: Lista Encadeada
 
 ## Limitações Conhecidas
-
- - `eventTimer` is fixed so every ingredient takes the same time

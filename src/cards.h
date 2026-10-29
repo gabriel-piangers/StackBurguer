@@ -33,11 +33,12 @@ struct Card{
         pos({_pos.x, _pos.y}), lastPos({_pos.x, _pos.y}), offset({0, 0}), type(_type), picked(false), hover(false), active(true), size(1), timeCounter(0.0f), next(nullptr), prev(nullptr)  {}
 
     // Getters
-    std::string title();
-    Color bgColor();
+    std::string getTitle();
+    Color getColor();
     Texture2D getTexture();
-    float eventTime();
-    std::function<void(Card*)> event();
+    int getRarity();
+    float getPrepTime();
+    std::function<void(Card*)> getEvent();
     Rectangle getRec();
     Rectangle getStackRec(int extraSize = 0);
 
@@ -57,68 +58,69 @@ struct CardParams {
     std::string title;
     Color bgColor;
     Texture2D& texture;
-    float eventTime;
+    int rarity; // 0 - not applicable | 1 - Commmom | 2 - Rare | 3 - Very rare
+    float prepTime;
     std::function<void(Card*)> event;
 };
 
 // Constants
 const CardParams cParams[] = {
     { // BREAD_B
-        "Bottom Bread", BEIGE, BREAD_B_TEXTURE, 0.0f, [](Card* c){}
+        "Bottom Bread", BEIGE, BREAD_B_TEXTURE, 1, 0.0f, [](Card* c){}
     },
     { // BREAD_T
-        "Top Bread", BEIGE, BREAD_T_TEXTURE, 0.0f, [](Card* c){}
+        "Top Bread", BEIGE, BREAD_T_TEXTURE, 1, 0.0f, [](Card* c){}
     },
     { // KETCHUP
-        "Ketchup", RED, KETCHUP_TEXTURE, 0.0f, [](Card* c){}
+        "Ketchup", RED, KETCHUP_TEXTURE, 1, 0.0f, [](Card* c){}
     },
     { // MUSTARD 
-        "Mustard", YELLOW, MUSTARD_TEXTURE, 0.0f, [](Card* c){}
+        "Mustard", YELLOW, MUSTARD_TEXTURE, 1, 0.0f, [](Card* c){}
     },
     { // PICKLES
-        "Pickles", LIME, PICKLES_TEXTURE, 0.0f, [](Card* c){}
+        "Pickles", LIME, PICKLES_TEXTURE, 2, 0.0f, [](Card* c){}
     },
     { // LETTUCE,
-        "Lettuce", GREEN, LETTUCE_TEXTURE, 0.0f, [](Card* c){}
+        "Lettuce", GREEN, LETTUCE_TEXTURE, 1, 0.0f, [](Card* c){}
     },
     { // TOMATO    
-        "Tomato", RED, TOMATO_TEXTURE, 0.0f, [](Card* c){}
+        "Tomato", RED, TOMATO_TEXTURE, 1, 1.5f, [](Card* c){}
     },
     { // TOMATO_SLICES   
-        "Sliced Tomato", RED, TOMATO_SLICES_TEXTURE, 0.0f, [](Card* c){}
+        "Sliced Tomato", RED, TOMATO_SLICES_TEXTURE, 1, 0.0f, [](Card* c){}
     }, 
     { // ONIONS 
-        "Onion", LIGHTGRAY, ONIONS_TEXTURE, 0.0f, [](Card* c){}
+        "Onion", LIGHTGRAY, ONIONS_TEXTURE, 1, 2.0f, [](Card* c){}
     },
     { // ONIONS_SLICES
-        "Sliced Onion", LIGHTGRAY, ONIONS_SLICES_TEXTURE, 0.0f, [](Card* c){}
+        "Sliced Onion", LIGHTGRAY, ONIONS_SLICES_TEXTURE, 1, 0.0f, [](Card* c){}
     },
     { // SWISS_CHEESE
-        "Swiss Cheese", GOLD, SWISS_CHEESE_TEXTURE, 0.0f, [](Card* c){}
+        "Swiss Cheese", GOLD, SWISS_CHEESE_TEXTURE, 2, 0.0f, [](Card* c){}
     },
     { // CHEDDAR 
-        "Cheddar", ORANGE, CHEDDAR_TEXTURE, 0.0f, [](Card* c){}
+        "Cheddar", ORANGE, CHEDDAR_TEXTURE, 1, 0.0f, [](Card* c){}
     },
     { // HAMBURGUER_RAW
-        "Hamburguer", PINK, HAMBURGUER_RAW_TEXTURE, 0.0f, [](Card* c){}
+        "Hamburguer", PINK, HAMBURGUER_RAW_TEXTURE, 1, 5.0f, [](Card* c){}
     },
     { // HAMBURGUER,
-        "Hamburguer", DARKBROWN, HAMBURGUER_TEXTURE, 0.0f, [](Card* c){}
+        "Hamburguer", DARKBROWN, HAMBURGUER_TEXTURE, 1, 0.0f, [](Card* c){}
     },
     { // BACON_RAW
-        "Bacon", PINK, BACON_RAW_TEXTURE, 0.0f, [](Card* c){}
+        "Bacon", PINK, BACON_RAW_TEXTURE, 2, 3.5f, [](Card* c){}
     },
     { // BACON
-        "Bacon", DARKBROWN, BACON_TEXTURE, 0.0f, [](Card* c){}
+        "Bacon", DARKBROWN, BACON_TEXTURE, 2, 0.0f, [](Card* c){}
     },
     { // EGG_RAW
-        "Egg", LIGHTGRAY, EGG_RAW_TEXTURE, 0.0f, [](Card* c){}
+        "Egg", LIGHTGRAY, EGG_RAW_TEXTURE, 1, 2.5f, [](Card* c){}
     },
     { // EGG
-        "Fried Egg", LIGHTGRAY, EGG_TEXTURE, 0.0f, [](Card* c){}
+        "Fried Egg", LIGHTGRAY, EGG_TEXTURE, 1, 0.0f, [](Card* c){}
     },
     { // GRILL
-        "Grill", GRAY, GRILL_TEXTURE, 3.0f, [](Card* c){
+        "Grill", GRAY, GRILL_TEXTURE, 0, 0.0f, [](Card* c){
             switch (c->type) {
                 case HAMBURGUER_RAW:
                     c->type = HAMBURGUER;
@@ -135,7 +137,7 @@ const CardParams cParams[] = {
         }
     },
     { // CUTTING
-        "Cutting board", BROWN, CUTTING_TEXTURE, 1.0f, [](Card* c){
+        "Cutting board", BROWN, CUTTING_TEXTURE, 0, 0.0f, [](Card* c){
             switch (c->type) {
                 case TOMATO:
                     c->type = TOMATO_SLICES;

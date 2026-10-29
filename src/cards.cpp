@@ -61,10 +61,10 @@ void Card::draw() {
     float scale = picked ? CARD_PICKUP_SCALE : 1.0f;
     Rectangle rec = getRec();
 
-    DrawRectanglePro(rec, {0, 0}, 0, this->bgColor());
+    DrawRectanglePro(rec, {0, 0}, 0, this->getColor());
 
     // Header
-    DrawText(this->title().c_str(), rec.x + CARD_PAD, rec.y + CARD_PAD, CARD_TITLE_SIZE*scale, BLACK);
+    DrawText(this->getTitle().c_str(), rec.x + CARD_PAD, rec.y + CARD_PAD, CARD_TITLE_SIZE*scale, BLACK);
     DrawLine(rec.x, rec.y + (CARD_TITLE_SIZE + 2*CARD_PAD)*scale, rec.x + CARD_W*scale, rec.y + (CARD_TITLE_SIZE + 2*CARD_PAD)*scale, BLACK);
 
     // Body
@@ -87,10 +87,10 @@ void Card::update(Card** cPicked) {
     }
 
     // Card event update
-    if(this->eventTime() && this->next) this->timeCounter += GetFrameTime();
+    if(!this->getRarity() && this->next) this->timeCounter += GetFrameTime();
     else this->timeCounter = 0.0f;
-    if(this->next && this->timeCounter >= this->eventTime()) {
-        this->event()(this->next); // This sintax looks weird but event() returns a function so it works
+    if(this->next && this->timeCounter >= this->next->getPrepTime()) {
+        this->getEvent()(this->next); // This sintax looks weird but getEvent() returns a function so it works
         this->timeCounter = 0.0f;
     }
 
@@ -98,7 +98,7 @@ void Card::update(Card** cPicked) {
     if(hover && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
         std::cout << "size: " << this->size << "\n";
         auto f = [](Card* c, int i) {
-            std::cout << i << ": " << c->title() << "\n"; 
+            std::cout << i << ": " << c->getTitle() << "\n"; 
         };
         this->propagate(f);
     }
@@ -121,11 +121,11 @@ void Card::update(Card** cPicked) {
     }
 }
 
-std::string Card::title() {
+std::string Card::getTitle() {
     return cParams[this->type].title;
 }
 
-Color Card::bgColor() {
+Color Card::getColor() {
     return cParams[this->type].bgColor;
 }
 
@@ -133,11 +133,15 @@ Texture2D Card::getTexture() {
     return cParams[this->type].texture;
 }
 
-float Card::eventTime() {
-    return cParams[this->type].eventTime;
+int Card::getRarity() {
+    return cParams[this->type].rarity;
 }
 
-std::function<void(Card*)> Card::event() {
+float Card::getPrepTime() {
+    return cParams[this->type].prepTime;
+}
+
+std::function<void(Card*)> Card::getEvent() {
     return cParams[this->type].event;
 }
 
@@ -204,7 +208,7 @@ void Card::pickup(Card** cPicked) {
 void Card::insert(Card* card) {
     Card* last = this->propagate([card](Card* c, int i) {c->size+=card->size;});
     if(last == card) return; // avoids self insertion 
-    std::cout << card->title() << " inserted on " << this->title() << "\n";
+    std::cout << card->getTitle() << " inserted on " << this->getTitle() << "\n";
     card->prev = last;
     last->next = card;
     auto f = [last](Card* c, int i) {
@@ -218,7 +222,7 @@ bool Card::isPositionValid(Card* cardCol) {
     Rectangle rec = cardCol ? cardCol->getStackRec(this->size) : this->getStackRec();
     Rectangle colRec = GetCollisionRec(rec, CARD_TABLE);
     if(colRec.width == rec.width && colRec.height == rec.height 
-        && (!cardCol || !this->eventTime())) return true;
+        && (!cardCol || this->getRarity())) return true;
     return false;
 }
 
