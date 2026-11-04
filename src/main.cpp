@@ -29,26 +29,26 @@ Texture2D CUTTING_TEXTURE;
 Texture2D COSTUMER_TEXTURE;
 
 void LoadTextures() {
-    BREAD_B_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    BREAD_T_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    KETCHUP_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    MUSTARD_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    PICKLES_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    LETTUCE_TEXTURE = LoadTexture("assets/items/Tomato.png");
+    BREAD_B_TEXTURE = LoadTexture("assets/items/Bottom_bread.png");
+    BREAD_T_TEXTURE = LoadTexture("assets/items/Top_bread.png");
+    KETCHUP_TEXTURE = LoadTexture("assets/items/Ketchup.png");
+    MUSTARD_TEXTURE = LoadTexture("assets/items/Mustard.png");
+    PICKLES_TEXTURE = LoadTexture("assets/items/Pickles.png");
+    LETTUCE_TEXTURE = LoadTexture("assets/items/Lettuce.png");
     TOMATO_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    TOMATO_SLICES_TEXTURE = LoadTexture("assets/items/Tomato.png");
+    TOMATO_SLICES_TEXTURE = LoadTexture("assets/items/Tomato_slices.png");
     ONIONS_TEXTURE = LoadTexture("assets/items/Onion.png");
-    ONIONS_SLICES_TEXTURE = LoadTexture("assets/items/Onion.png");
-    SWISS_CHEESE_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    CHEDDAR_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    HAMBURGUER_RAW_TEXTURE = LoadTexture("assets/items/Hamburguer.png");
+    ONIONS_SLICES_TEXTURE = LoadTexture("assets/items/Onion_slices.png");
+    SWISS_CHEESE_TEXTURE = LoadTexture("assets/items/Swiss_cheese.png");
+    CHEDDAR_TEXTURE = LoadTexture("assets/items/Cheddar_cheese.png");
+    HAMBURGUER_RAW_TEXTURE = LoadTexture("assets/items/Hamburguer_raw.png");
     HAMBURGUER_TEXTURE = LoadTexture("assets/items/Hamburguer.png");
-    BACON_RAW_TEXTURE = LoadTexture("assets/items/Bacon.png");
+    BACON_RAW_TEXTURE = LoadTexture("assets/items/Bacon_raw.png");
     BACON_TEXTURE = LoadTexture("assets/items/Bacon.png");
-    EGG_RAW_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    EGG_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    GRILL_TEXTURE = LoadTexture("assets/items/Tomato.png");
-    CUTTING_TEXTURE = LoadTexture("assets/items/Tomato.png");
+    EGG_RAW_TEXTURE = LoadTexture("assets/items/Egg.png");
+    EGG_TEXTURE = LoadTexture("assets/items/Fried_egg.png");
+    GRILL_TEXTURE = LoadTexture("assets/items/Grill.png");
+    CUTTING_TEXTURE = LoadTexture("assets/items/Cutting_board.png");
     COSTUMER_TEXTURE = LoadTexture("assets/costumer.png");
 }
 
