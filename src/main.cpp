@@ -53,10 +53,10 @@ void LoadTextures() {
     GRILL_TEXTURE = LoadTexture("assets/items/Grill.png");
     CUTTING_TEXTURE = LoadTexture("assets/items/Cutting_board.png");
     
-    COSTUMER_HAPPY_TEXTURE = LoadTexture("assets/costumer_happy.png");
-    COSTUMER_NORMAL_TEXTURE = LoadTexture("assets/costumer_normal.png");
-    COSTUMER_MAD_TEXTURE = LoadTexture("assets/costumer_mad.png");
-    COSTUMER_BACK_TEXTURE = LoadTexture("assets/costumer_back.png");
+    COSTUMER_HAPPY_TEXTURE = LoadTexture("assets/Costumer_happy.png");
+    COSTUMER_NORMAL_TEXTURE = LoadTexture("assets/Costumer_normal.png");
+    COSTUMER_MAD_TEXTURE = LoadTexture("assets/Costumer_mad.png");
+    COSTUMER_BACK_TEXTURE = LoadTexture("assets/Costumer_back.png");
 }
 
 void UnloadTextures() {
