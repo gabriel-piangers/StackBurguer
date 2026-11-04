@@ -26,7 +26,10 @@ Texture2D EGG_TEXTURE;
 Texture2D GRILL_TEXTURE;
 Texture2D CUTTING_TEXTURE;
 
-Texture2D COSTUMER_TEXTURE;
+Texture2D COSTUMER_HAPPY_TEXTURE;
+Texture2D COSTUMER_NORMAL_TEXTURE;
+Texture2D COSTUMER_MAD_TEXTURE;
+Texture2D COSTUMER_BACK_TEXTURE;
 
 void LoadTextures() {
     BREAD_B_TEXTURE = LoadTexture("assets/items/Bottom_bread.png");
@@ -49,7 +52,11 @@ void LoadTextures() {
     EGG_TEXTURE = LoadTexture("assets/items/Fried_egg.png");
     GRILL_TEXTURE = LoadTexture("assets/items/Grill.png");
     CUTTING_TEXTURE = LoadTexture("assets/items/Cutting_board.png");
-    COSTUMER_TEXTURE = LoadTexture("assets/costumer.png");
+    
+    COSTUMER_HAPPY_TEXTURE = LoadTexture("assets/costumer_happy.png");
+    COSTUMER_NORMAL_TEXTURE = LoadTexture("assets/costumer_normal.png");
+    COSTUMER_MAD_TEXTURE = LoadTexture("assets/costumer_mad.png");
+    COSTUMER_BACK_TEXTURE = LoadTexture("assets/costumer_back.png");
 }
 
 void UnloadTextures() {
@@ -73,7 +80,10 @@ void UnloadTextures() {
     UnloadTexture(EGG_TEXTURE);
     UnloadTexture(GRILL_TEXTURE);
     UnloadTexture(CUTTING_TEXTURE);
-    UnloadTexture(COSTUMER_TEXTURE);
+    UnloadTexture(COSTUMER_HAPPY_TEXTURE);
+    UnloadTexture(COSTUMER_NORMAL_TEXTURE);
+    UnloadTexture(COSTUMER_MAD_TEXTURE);
+    UnloadTexture(COSTUMER_BACK_TEXTURE);
 }
 
 int main () {

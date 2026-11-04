@@ -36,7 +36,10 @@ extern Texture2D EGG_TEXTURE;
 extern Texture2D GRILL_TEXTURE;
 extern Texture2D CUTTING_TEXTURE;
 
-extern Texture2D COSTUMER_TEXTURE;
+extern Texture2D COSTUMER_HAPPY_TEXTURE;
+extern Texture2D COSTUMER_NORMAL_TEXTURE;
+extern Texture2D COSTUMER_MAD_TEXTURE;
+extern Texture2D COSTUMER_BACK_TEXTURE;
 
 // Enums
 enum Ingredient {

@@ -155,8 +155,8 @@ Rectangle Card::getStackRec(int extraSize) {
 
 void Card::place(Card** cPicked) {
     bool valid = true;
-    Costumer costumerCol = GetCollisionCostumer(this->getRec());
-    if(costumerCol.patience > 0.0f) { // Valid collision with Costumer Rec
+    Costumer& costumerCol = GetCollisionCostumer(this->getRec());
+    if(costumerCol.state != EMPTY) { // Valid collision with Costumer Rec
         if(costumerCol.order.check(this)) {
             std::cout << "Score: " << costumerCol.score() << "\n";
             this->destroy();
