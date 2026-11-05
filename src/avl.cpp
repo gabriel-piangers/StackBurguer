@@ -1,0 +1,97 @@
+#include "avl.h"
+#include <algorithm>
+
+int GetFb(AVL_node* node) {
+    if(!node) return 0;
+
+    int lh = node->left ? node->left->h : -1;
+    int rh = node->right ? node->right->h : -1;
+
+    return lh - rh;
+}
+
+void updateHeight(AVL_node* node) {
+    int lh = node->left ? node->left->h : -1;
+    int rh = node->right ? node->right->h : -1;
+    node->h = std::max(lh, rh) + 1;
+}
+
+void RotateL(AVL_node** root) {
+    AVL_node* r = (*root)->right;
+    AVL_node* rl = (*root)->right->left;
+    (*root)->right = rl;
+    r->left = *root;
+    updateHeight(*root);
+    updateHeight(r);
+
+    *root = r;
+}
+
+void RotateR(AVL_node** root) {
+    AVL_node* l = (*root)->left;
+    AVL_node* lr = l->right;
+    (*root)->left = lr;
+    l->right = *root;
+    
+    *root = l;
+}
+
+
+void balance(AVL_node** root) {
+    int fb = GetFb((*root));
+
+    if(fb >= 2 && GetFb((*root)->left) >= 0) {
+        RotateR(root);
+    } else if (fb >= 2) {
+        RotateL(&(*root)->left);
+        RotateR(root);
+    } else if (fb <= -2 && GetFb((*root)->right) <= 0) {
+        RotateL(root);
+    } else if (fb <= -2) {
+        RotateR(&(*root)->right);
+        RotateL(root);
+    }
+}
+
+void Insert(AVL_node** root, std::string s, float p) {
+    float d = GetCostumerDifficulty(s, p);
+    if(!(*root)) {
+        AVL_node* node = new AVL_node(s, p);
+
+        (*root) = node;
+    }
+    else if (d < (*root)->difficulty) Insert(&(*root)->left, s, p);
+    else Insert(&(*root)->right, s, p);
+    
+   updateHeight((*root));
+   balance(root);
+}
+
+AVL_node* SearchClosest(AVL_node* root, float d) { // Retorna o mais proximo
+    if(!root) return nullptr;
+    if(abs(d - root->difficulty) < DIFFICULTY_MARGIN) return root;
+    if(d < root->difficulty) return root->left ? SearchClosest(root->left, d) : root;
+    
+    return root->right ? SearchClosest(root->right, d) : root;
+}
+
+void Destroy(AVL_node* root) {
+    if(!root) return;
+    Destroy(root->left);
+    Destroy(root->right);
+
+    delete root;
+}
+
+void AVL::insert(std::string s, float p) {
+    Insert(&this->root, s, p);
+}
+
+AVL_node* AVL::search(float d) {
+    return SearchClosest(this->root, d);
+}
+
+void AVL::destroy() {
+    Destroy(this->root);
+    this->root = nullptr;
+}

@@ -1,9 +1,11 @@
 #include "costumer.h"
 #include "cards.h"
 #include "reasings.h"
+#include "avl.h"
 
 Costumer costumers[COSTUMER_AMOUNT];
 Costumer emptyCostumer;
+AVL avl;
 
 Vector2 GetCostumerPos(int i) {
     return {COSTUMER_DIV.x + i*COSTUMER_DIV.width/COSTUMER_AMOUNT, COSTUMER_DIV.y};
@@ -17,9 +19,16 @@ Costumer& GetCollisionCostumer(Rectangle rec) {
 }
 
 void InitCostumers() {
-    costumers[0] = Costumer(GetCostumerPos(0), "pbtmcnz", 30.0f);
-    costumers[1] = Costumer(GetCostumerPos(1), "nomosnz", 90.0f);
-    costumers[2] = Costumer(GetCostumerPos(2), "bpknz", 60.0f);
+    avl.insert("pbtmcnz", 30.0f);
+    avl.insert("nomosnz", 90.0f);
+    avl.insert("bpknz", 60.0f);
+
+    AVL_node* c1 = avl.search(GetCostumerDifficulty("pbtmcnz", 30.0f));
+    AVL_node* c2 = avl.search(GetCostumerDifficulty("nomosnz", 90.0f));
+    AVL_node* c3 = avl.search(GetCostumerDifficulty("bpknz", 60.0f));
+    costumers[0] = Costumer(GetCostumerPos(0), c1->order, c1->patience);
+    costumers[1] = Costumer(GetCostumerPos(1), c2->order, c2->patience);
+    costumers[2] = Costumer(GetCostumerPos(2), c3->order, c3->patience);
 }
 
 void DrawCostumers() {

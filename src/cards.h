@@ -108,13 +108,13 @@ const CardParams cParams[] = {
         "Hamburguer", DARKBROWN, HAMBURGUER_TEXTURE, 1, 0.0f, [](Card* c){}
     },
     { // BACON_RAW
-        "Bacon", PINK, BACON_RAW_TEXTURE, 2, 3.5f, [](Card* c){}
+        "Bacon", PINK, BACON_RAW_TEXTURE, 2, 4.0f, [](Card* c){}
     },
     { // BACON
         "Bacon", DARKBROWN, BACON_TEXTURE, 2, 0.0f, [](Card* c){}
     },
     { // EGG_RAW
-        "Egg", LIGHTGRAY, EGG_RAW_TEXTURE, 1, 2.5f, [](Card* c){}
+        "Egg", LIGHTGRAY, EGG_RAW_TEXTURE, 1, 3.0f, [](Card* c){}
     },
     { // EGG
         "Fried Egg", LIGHTGRAY, EGG_TEXTURE, 1, 0.0f, [](Card* c){}
