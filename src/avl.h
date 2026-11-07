@@ -1,7 +1,7 @@
 #ifndef AVL_H
 #define AVL_H
 
-#include <string>
+#include "constants.h"
 #include "utils.h"
 #include "costumer.h"
 

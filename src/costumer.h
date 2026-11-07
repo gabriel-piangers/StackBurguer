@@ -36,6 +36,25 @@ struct Costumer {
     float score();
 };
 
+struct QueueNode {
+    Costumer costumer;
+    QueueNode* next;
+
+    QueueNode(Costumer c): costumer(c), next(nullptr) {}
+};
+
+struct Queue {
+    int size;
+    QueueNode* start;
+    QueueNode* end;
+
+    Queue(): size(0), start(nullptr), end(nullptr) {}
+
+    void insert(Costumer costumer);
+    Costumer pop();
+    bool empty();
+};
+
 // Exports
 void InitCostumers();
 void DrawCostumers();

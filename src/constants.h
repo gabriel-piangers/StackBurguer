@@ -7,12 +7,17 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
+#include <random>
+#include <chrono>
 
 #define SCREEN_W 1600
 #define SCREEN_H 900
 
 const Rectangle CARD_TABLE = {200, 300, 1200, 600};
 const Rectangle COSTUMER_DIV = {200, 50, 1200, 250};
+
+const unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+static std::default_random_engine rng(seed);
 
 // Textures
 extern Texture2D BREAD_B_TEXTURE;

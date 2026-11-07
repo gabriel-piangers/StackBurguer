@@ -2,9 +2,11 @@
 #include "cards.h"
 #include "reasings.h"
 #include "avl.h"
+#include <raymath.h>
 
 Costumer costumers[COSTUMER_AMOUNT];
 Costumer emptyCostumer;
+Queue costumerQueue;
 
 Vector2 GetCostumerPos(int i) {
     return {COSTUMER_DIV.x + i*COSTUMER_DIV.width/COSTUMER_AMOUNT, COSTUMER_DIV.y};
@@ -21,12 +23,29 @@ Costumer& GetCollisionCostumer(Rectangle rec) {
     return emptyCostumer;
 }
 
+Costumer GetRandomCostumer(int difficulty) {
+    difficulty = (int) Clamp(1.0, (float) difficulty, 4.0);
+    std::uniform_real_distribution<float> dist(2.0f*difficulty, 2.0f*difficulty + 2.0f);
+    float d = dist(rng);
+
+    return GetCostumerByDifficulty(d);
+}
+
 void InitCostumers() {
     InitAVL("data/pedidos.txt");
+    costumerQueue.insert(GetRandomCostumer(1)); // Easy
+    costumerQueue.insert(GetRandomCostumer(1)); // Easy
+    costumerQueue.insert(GetRandomCostumer(1)); // Easy
+    costumerQueue.insert(GetRandomCostumer(2)); // Medium
+    costumerQueue.insert(GetRandomCostumer(2)); // Medium
+    costumerQueue.insert(GetRandomCostumer(2)); // Medium
+    costumerQueue.insert(GetRandomCostumer(3)); // Hard
+    costumerQueue.insert(GetRandomCostumer(3)); // Hard
+    costumerQueue.insert(GetRandomCostumer(4)); // Very hard
 
-    costumers[0] = GetCostumerByDifficulty(2.0);
-    costumers[1] = GetCostumerByDifficulty(4.0);
-    costumers[2] = GetCostumerByDifficulty(6.0);
+    costumers[0] = costumerQueue.pop();
+    costumers[1] = costumerQueue.pop();
+    costumers[2] = costumerQueue.pop();
 }
 
 void DrawCostumers() {
@@ -34,7 +53,10 @@ void DrawCostumers() {
 }
 
 void UpdateCostumers() {
-    for(int i=0; i<COSTUMER_AMOUNT; i++) costumers[i].update();
+    for(int i=0; i<COSTUMER_AMOUNT; i++) {
+        if(costumers[i].state != EMPTY) costumers[i].update();
+        else if(!costumerQueue.empty()) costumers[i] = costumerQueue.pop();
+    }
 }
 
 Texture2D GetCostumerTexture(COSTUMER_STATE state) {
@@ -73,10 +95,6 @@ void Costumer::draw(Vector2 pos) {
 }
 
 void Costumer::update() {
-    if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        std::cout << this->state << '\n';
-    }
-
     if(this->state == EMPTY) return; // emptyCostumer
     this->timer += GetFrameTime();
 
@@ -112,4 +130,35 @@ float Costumer::score() {
     this->timer = 0.0f;
     return this->difficulty * this->state;
 }
+
+void Queue::insert(Costumer c) {
+    QueueNode* node = new QueueNode(c);
+    if(!this->start) {
+        this->start = node;
+        this->end = node;
+    } else {
+        this->end->next = node;
+        this->end = node;
+    }
+    
+    this->size++;
+}
+
+Costumer Queue::pop() {
+    if(!this->start) return emptyCostumer;
+
+    QueueNode* node = this->start;
+    Costumer c = node->costumer;
+    
+    this->start = this->start->next;
+    delete node;
+    this->size--;
+
+    return c;
+}
+
+bool Queue::empty() {
+    return this->size==0;
+}
+
 

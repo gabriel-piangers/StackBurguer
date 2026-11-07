@@ -6,8 +6,7 @@
 using namespace std;
 
 AVL avl;
-default_random_engine rng;
-uniform_real_distribution<float> dist(30.0f, 90.0f);
+static uniform_real_distribution<float> dist(30.0f, 90.0f);
 
 void InitAVL(string path) {
     Timer timer;
