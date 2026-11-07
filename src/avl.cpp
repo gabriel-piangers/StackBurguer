@@ -64,7 +64,9 @@ void RotateR(AVL_node** root) {
     AVL_node* lr = l->right;
     (*root)->left = lr;
     l->right = *root;
-    
+    updateHeight(*root);
+    updateHeight(l);
+
     *root = l;
 }
 
@@ -85,9 +87,9 @@ void balance(AVL_node** root) {
     }
 }
 
-void Insert(AVL_node** root, string s, float p, float d) {
+void Insert(AVL_node** root, string& s, float p, float d) {
     if(!(*root)) {
-        AVL_node* node = new AVL_node(s, p);
+        AVL_node* node = new AVL_node(s, p, d);
         (*root) = node;
     }
     else if (d < (*root)->difficulty) Insert(&(*root)->left, s, p, d);
@@ -113,7 +115,7 @@ void Destroy(AVL_node* root) {
     delete root;
 }
 
-void AVL::insert(string s, float p) {
+void AVL::insert(string& s, float p) {
     float d = GetCostumerDifficulty(s, p);
     Insert(&this->root, s, p, d);
 }

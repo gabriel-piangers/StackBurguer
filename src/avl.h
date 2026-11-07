@@ -15,7 +15,7 @@ struct AVL_node {
     AVL_node* left;
     AVL_node* right;
 
-    AVL_node(std::string s, float p): order(s), patience(p), difficulty(GetCostumerDifficulty(s, p)), h(0), left(nullptr), right(nullptr) {}
+    AVL_node(std::string& s, float p, float d): order(s), patience(p), difficulty(d), h(0), left(nullptr), right(nullptr) {}
 };
 
 
@@ -25,7 +25,7 @@ struct AVL {
     AVL(): root(nullptr) {}
     AVL(AVL_node* _root): root(_root) {}
 
-    void insert(std::string order, float patience);
+    void insert(std::string& order, float patience);
     AVL_node* search(float difficulty);
     void destroy();
 };
