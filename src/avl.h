@@ -3,6 +3,7 @@
 
 #include <string>
 #include "utils.h"
+#include "costumer.h"
 
 #define DIFFICULTY_MARGIN 0.0001f
 
@@ -28,5 +29,9 @@ struct AVL {
     AVL_node* search(float difficulty);
     void destroy();
 };
+
+// Exports
+void InitAVL(std::string path);
+Costumer GetCostumerByDifficulty(float d);
 
 #endif 

@@ -5,34 +5,32 @@
 
 Costumer costumers[COSTUMER_AMOUNT];
 Costumer emptyCostumer;
-AVL avl;
 
 Vector2 GetCostumerPos(int i) {
     return {COSTUMER_DIV.x + i*COSTUMER_DIV.width/COSTUMER_AMOUNT, COSTUMER_DIV.y};
 }
 
+Rectangle GetCostumerRec(Vector2 pos) {
+    return {pos.x, pos.y + COSTUMER_TEXTURE_H, COSTUMER_TEXTURE_W, COSTUMER_DIV.height - COSTUMER_TEXTURE_H};
+}
+
 Costumer& GetCollisionCostumer(Rectangle rec) {
     for(int i=0; i<COSTUMER_AMOUNT; i++) {
-        if(costumers[i].state != EMPTY && CheckCollisionRecs(costumers[i].getRec(), rec)) return costumers[i];
+        if(costumers[i].state != EMPTY && CheckCollisionRecs(GetCostumerRec(GetCostumerPos(i)), rec)) return costumers[i];
     }
     return emptyCostumer;
 }
 
 void InitCostumers() {
-    avl.insert("pbtmcnz", 30.0f);
-    avl.insert("nomosnz", 90.0f);
-    avl.insert("bpknz", 60.0f);
+    InitAVL("data/pedidos.txt");
 
-    AVL_node* c1 = avl.search(GetCostumerDifficulty("pbtmcnz", 30.0f));
-    AVL_node* c2 = avl.search(GetCostumerDifficulty("nomosnz", 90.0f));
-    AVL_node* c3 = avl.search(GetCostumerDifficulty("bpknz", 60.0f));
-    costumers[0] = Costumer(GetCostumerPos(0), c1->order, c1->patience);
-    costumers[1] = Costumer(GetCostumerPos(1), c2->order, c2->patience);
-    costumers[2] = Costumer(GetCostumerPos(2), c3->order, c3->patience);
+    costumers[0] = GetCostumerByDifficulty(2.0);
+    costumers[1] = GetCostumerByDifficulty(4.0);
+    costumers[2] = GetCostumerByDifficulty(6.0);
 }
 
 void DrawCostumers() {
-    for(int i=0; i<COSTUMER_AMOUNT; i++) costumers[i].draw();
+    for(int i=0; i<COSTUMER_AMOUNT; i++) costumers[i].draw(GetCostumerPos(i));
 }
 
 void UpdateCostumers() {
@@ -52,24 +50,24 @@ Texture2D GetCostumerTexture(COSTUMER_STATE state) {
     }
 }
 
-void Costumer::draw() {
+void Costumer::draw(Vector2 pos) {
     if(this->state == EMPTY) return; // emptyCostumer
     Texture2D texture = GetCostumerTexture(this->state);
     switch (state) {
     case ARRIVING: {
         float scale = EaseLinearIn(this->timer, 0.0f, 1.0f, COSTUMER_WALK_DURATION);
-        DrawTextureEx(texture, this->pos, 0.0f, scale, WHITE);
+        DrawTextureEx(texture, pos, 0.0f, scale, WHITE);
         break;
     }
     case LEAVING: {
         float scale = EaseLinearIn(this->timer, 1.0f, -1.0f, COSTUMER_WALK_DURATION);
-        DrawTextureEx(texture, this->pos, 0.0f, scale, WHITE);
+        DrawTextureEx(texture, pos, 0.0f, scale, WHITE);
         break;
     }
     default:
-        DrawTextureEx(texture, this->pos, 0.0f, 1.0f, this->patience>0.0f ? WHITE : RED);
-        this->order.draw({this->pos.x + COSTUMER_TEXTURE_W + 10, this->pos.y});
-        DrawRectangleLinesEx(this->getRec(), 1.0f, GREEN);
+        DrawTextureEx(texture, pos, 0.0f, 1.0f, this->patience>0.0f ? WHITE : RED);
+        this->order.draw({pos.x + COSTUMER_TEXTURE_W + 10, pos.y});
+        DrawRectangleLinesEx(GetCostumerRec(pos), 1.0f, GREEN);
         break;
     }
 }
@@ -113,9 +111,5 @@ float Costumer::score() {
     this->state = LEAVING;
     this->timer = 0.0f;
     return this->difficulty * this->state;
-}
-
-Rectangle Costumer::getRec() {
-    return {this->pos.x, this->pos.y + COSTUMER_TEXTURE_H, COSTUMER_TEXTURE_W, COSTUMER_DIV.height - COSTUMER_TEXTURE_H};
 }
 

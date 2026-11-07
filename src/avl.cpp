@@ -1,5 +1,37 @@
 #include "avl.h"
-#include <algorithm>
+#include "timer.h"
+#include <fstream>
+#include <random>
+
+using namespace std;
+
+AVL avl;
+default_random_engine rng;
+uniform_real_distribution<float> dist(30.0f, 90.0f);
+
+void InitAVL(string path) {
+    Timer timer;
+    timer_iniciar(&timer);
+    ifstream file(path); // read-only
+    if(!file.is_open()) {
+        cerr << "Error opening the file in path " << path << "\n";
+        return;
+    }
+    string order;
+    while(getline(file, order)) {
+        getline(file, order);
+        float patience = dist(rng);       
+        avl.insert(order, patience);
+    }
+
+    file.close();
+    cout << "InitAVL execution time: " << timer_parar(&timer) << " seconds\n";
+}
+
+Costumer GetCostumerByDifficulty(float d) {
+    AVL_node* node = avl.search(d);
+    return Costumer(node->order, node->patience);
+}
 
 int GetFb(AVL_node* node) {
     if(!node) return 0;
@@ -13,7 +45,7 @@ int GetFb(AVL_node* node) {
 void updateHeight(AVL_node* node) {
     int lh = node->left ? node->left->h : -1;
     int rh = node->right ? node->right->h : -1;
-    node->h = std::max(lh, rh) + 1;
+    node->h = max(lh, rh) + 1;
 }
 
 void RotateL(AVL_node** root) {
@@ -53,15 +85,13 @@ void balance(AVL_node** root) {
     }
 }
 
-void Insert(AVL_node** root, std::string s, float p) {
-    float d = GetCostumerDifficulty(s, p);
+void Insert(AVL_node** root, string s, float p, float d) {
     if(!(*root)) {
         AVL_node* node = new AVL_node(s, p);
-
         (*root) = node;
     }
-    else if (d < (*root)->difficulty) Insert(&(*root)->left, s, p);
-    else Insert(&(*root)->right, s, p);
+    else if (d < (*root)->difficulty) Insert(&(*root)->left, s, p, d);
+    else Insert(&(*root)->right, s, p, d);
     
    updateHeight((*root));
    balance(root);
@@ -83,8 +113,9 @@ void Destroy(AVL_node* root) {
     delete root;
 }
 
-void AVL::insert(std::string s, float p) {
-    Insert(&this->root, s, p);
+void AVL::insert(string s, float p) {
+    float d = GetCostumerDifficulty(s, p);
+    Insert(&this->root, s, p, d);
 }
 
 AVL_node* AVL::search(float d) {

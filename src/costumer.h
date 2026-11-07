@@ -20,7 +20,6 @@ enum COSTUMER_STATE {
 };
 
 struct Costumer {
-    Vector2 pos;
     Recipe order;
     float patience;
     float timer;
@@ -29,13 +28,12 @@ struct Costumer {
 
     Costumer(): state(EMPTY) {}
 
-    Costumer(Vector2 _pos, std::string s, int _patience):
-        pos(_pos), order(Recipe(s)), patience(_patience), difficulty(GetCostumerDifficulty(s, _patience)), state(ARRIVING) {}
+    Costumer(std::string s, int _patience):
+        order(Recipe(s)), patience(_patience), difficulty(GetCostumerDifficulty(s, _patience)), state(ARRIVING) {}
 
-    void draw();
+    void draw(Vector2 pos);
     void update();
     float score();
-    Rectangle getRec();
 };
 
 // Exports
