@@ -73,5 +73,11 @@ enum Ingredient {
     CUTTING
 };
 
+enum GameState {
+    MAIN_MENU,
+    IN_GAME,
+    HISTORY,
+    EXIT
+};
 
 #endif

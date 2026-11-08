@@ -2,8 +2,11 @@
 #include "constants.h"
 #include "cards.h"
 #include "costumer.h"
+#include "ui.h"
 
 using namespace std;
+
+GameState curGameState = MAIN_MENU;
 
 Rectangle COSTUMER_DIV;
 Rectangle CARD_TABLE;
@@ -96,7 +99,7 @@ void InitGame() {
 
 int main () {
     // Initialization
-    InitWindow(GetScreenWidth(), GetScreenHeight(), "My first RAYLIB program!");
+    InitWindow(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()), "My first RAYLIB program!");
     SetTargetFPS(60);
     ToggleBorderlessWindowed();
 
@@ -105,19 +108,58 @@ int main () {
     InitCards();
     InitCostumers();
 
-    while (WindowShouldClose() == false) {
-        // Update
-        UpdateCards();
-        UpdateCostumers();
-        
-        // Draw
-        BeginDrawing();
-            ClearBackground(BLACK);
-            DrawRectangleLinesEx(CARD_TABLE, 2, RED);
-            DrawRectangleLinesEx(COSTUMER_DIV, 2, PURPLE);
-            DrawCostumers();
-            DrawCards();
-        EndDrawing();
+    while (!WindowShouldClose()) {
+        if(!IsWindowFocused()) {
+            MinimizeWindow();
+        }
+
+        switch (curGameState) {
+        case MAIN_MENU: {
+            DrawTitle("DadoBurguer");
+            Rectangle MenuBtnRec = {(GetScreenWidth() - 300)/2.0f, (GetScreenHeight() - 50)/2.0f, 300.0f, 50.0f};
+            Button playBtn(MenuBtnRec, "New Game", []() {curGameState = IN_GAME;});
+            Button ExitBtn(MenuBtnRec, "Exit", []() {curGameState = EXIT;});
+            ExitBtn.rec.y += 70.0f;
+
+            playBtn.update();
+            ExitBtn.update();
+
+            BeginDrawing();
+                ClearBackground(BLACK);
+                playBtn.draw(); 
+                ExitBtn.draw();
+            EndDrawing();
+
+            break;
+        }
+        case IN_GAME: {
+            // Update
+            UpdateCards();
+            UpdateCostumers();
+            
+            // Draw
+            BeginDrawing();
+                ClearBackground(BLACK);
+                DrawRectangleLinesEx(CARD_TABLE, 2, RED);
+                DrawRectangleLinesEx(COSTUMER_DIV, 2, PURPLE);
+                DrawCostumers();
+                DrawCards();
+            EndDrawing();
+
+            break;
+        }
+        case HISTORY: {
+            //TODO
+            break;
+        }
+        case EXIT: {
+            UnloadTextures();
+            CloseWindow();
+            return 0;
+        }
+        default:
+            break;
+        }
     }
 
     // De-initialization
