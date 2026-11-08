@@ -5,6 +5,9 @@
 
 using namespace std;
 
+Rectangle COSTUMER_DIV;
+Rectangle CARD_TABLE;
+
 Texture2D BREAD_B_TEXTURE;
 Texture2D BREAD_T_TEXTURE;
 Texture2D KETCHUP_TEXTURE;
@@ -86,10 +89,18 @@ void UnloadTextures() {
     UnloadTexture(COSTUMER_BACK_TEXTURE);
 }
 
+void InitGame() {
+    COSTUMER_DIV = {(GetMonitorWidth(GetCurrentMonitor()) - TABLE_W)/2.0f, GAME_MARGIN, TABLE_W, COSTUMER_DIV_H};
+    CARD_TABLE = {(GetMonitorWidth(GetCurrentMonitor()) - TABLE_W)/2.0f, COSTUMER_DIV_H + GAME_MARGIN + TABLE_PAD, TABLE_W, TABLE_H};
+}
+
 int main () {
     // Initialization
-    InitWindow(SCREEN_W, SCREEN_H, "My first RAYLIB program!");
+    InitWindow(GetScreenWidth(), GetScreenHeight(), "My first RAYLIB program!");
     SetTargetFPS(60);
+    ToggleBorderlessWindowed();
+
+    InitGame();
     LoadTextures();
     InitCards();
     InitCostumers();

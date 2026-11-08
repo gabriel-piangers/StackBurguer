@@ -10,8 +10,8 @@ void ResetCards() {
 
 void InitCards() {
     ResetCards();
-    AddCard(BREAD_B, {200, 700});
-    AddCard(BREAD_T, {200, 400});
+    AddCard(BREAD_B, {1400, 700});
+    AddCard(BREAD_T, {1400, 400});
     AddCard(MUSTARD, {400, 700});
     AddCard(TOMATO, {600, 700});
     AddCard(HAMBURGUER_RAW, {800, 700});

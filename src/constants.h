@@ -10,11 +10,14 @@
 #include <random>
 #include <chrono>
 
-#define SCREEN_W 1600
-#define SCREEN_H 900
+#define TABLE_W 1400
+#define TABLE_H 700
+#define COSTUMER_DIV_H 250
+#define TABLE_PAD 20 
+#define GAME_MARGIN 50
 
-const Rectangle CARD_TABLE = {200, 300, 1200, 600};
-const Rectangle COSTUMER_DIV = {200, 50, 1200, 250};
+extern Rectangle COSTUMER_DIV;
+extern Rectangle CARD_TABLE;
 
 const unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 static std::default_random_engine rng(seed);
@@ -69,5 +72,6 @@ enum Ingredient {
     GRILL,
     CUTTING
 };
+
 
 #endif
