@@ -2,14 +2,18 @@
 #include "constants.h"
 #include "cards.h"
 #include "costumer.h"
+#include "history.h"
 #include "ui.h"
 
 using namespace std;
 
 GameState curGameState = MAIN_MENU;
+int curHistoryPage = 0;
 
 Rectangle COSTUMER_DIV;
 Rectangle CARD_TABLE;
+Rectangle MENU_DIV;
+Rectangle RETURN_BTN_REC;
 
 Texture2D BREAD_B_TEXTURE;
 Texture2D BREAD_T_TEXTURE;
@@ -93,8 +97,11 @@ void UnloadTextures() {
 }
 
 void InitGame() {
-    COSTUMER_DIV = {(GetMonitorWidth(GetCurrentMonitor()) - TABLE_W)/2.0f, GAME_MARGIN, TABLE_W, COSTUMER_DIV_H};
-    CARD_TABLE = {(GetMonitorWidth(GetCurrentMonitor()) - TABLE_W)/2.0f, COSTUMER_DIV_H + GAME_MARGIN + TABLE_PAD, TABLE_W, TABLE_H};
+    int curMon = GetCurrentMonitor();
+    MENU_DIV = {(GetMonitorWidth(curMon) - MENU_DIV_W)/2.0f, (GetMonitorHeight(curMon) - MENU_DIV_H)/2.0f, MENU_DIV_W, MENU_DIV_H};   
+    COSTUMER_DIV = {(GetMonitorWidth(curMon) - TABLE_W)/2.0f, GAME_MARGIN, TABLE_W, COSTUMER_DIV_H};
+    CARD_TABLE = {(GetMonitorWidth(curMon) - TABLE_W)/2.0f, COSTUMER_DIV_H + GAME_MARGIN + TABLE_PAD, TABLE_W, TABLE_H};
+    RETURN_BTN_REC = {MENU_DIV.x, MENU_DIV.y + MENU_DIV_H + 20.0f, 100.0f, 50.0f};
 }
 
 int main () {
@@ -107,6 +114,7 @@ int main () {
     LoadTextures();
     InitCards();
     InitCostumers();
+    InitHistory("data/historico.txt");
 
     while (!WindowShouldClose()) {
         if(!IsWindowFocused()) {
@@ -115,19 +123,25 @@ int main () {
 
         switch (curGameState) {
         case MAIN_MENU: {
-            DrawTitle("DadoBurguer");
             Rectangle MenuBtnRec = {(GetScreenWidth() - 300)/2.0f, (GetScreenHeight() - 50)/2.0f, 300.0f, 50.0f};
             Button playBtn(MenuBtnRec, "New Game", []() {curGameState = IN_GAME;});
-            Button ExitBtn(MenuBtnRec, "Exit", []() {curGameState = EXIT;});
-            ExitBtn.rec.y += 70.0f;
+            Button historyBtn(MenuBtnRec, "History", []() {curGameState = HISTORY;});
+            historyBtn.rec.y += 70.0f;
+            Button exitBtn(MenuBtnRec, "Exit", []() {curGameState = EXIT;});
+            exitBtn.rec.y += 2*70.0f;
+            Button buttons[] = {playBtn, historyBtn, exitBtn};
 
-            playBtn.update();
-            ExitBtn.update();
+            // Updated
+            for(int i=0; i<3; i++) buttons[i].update();
 
+            // Draw
             BeginDrawing();
                 ClearBackground(BLACK);
-                playBtn.draw(); 
-                ExitBtn.draw();
+                DrawTitle("DadoBurguer");
+                for(int i=0; i<3; i++) {
+                    buttons[i].draw();
+                } 
+                    
             EndDrawing();
 
             break;
@@ -149,7 +163,33 @@ int main () {
             break;
         }
         case HISTORY: {
-            //TODO
+            Button returnBtn(RETURN_BTN_REC, "Return", []() {curGameState = MAIN_MENU;});
+            Button nextPageBtn(RETURN_BTN_REC, " >> ", []() {curHistoryPage += 1;});
+            nextPageBtn.rec.x = MENU_DIV.x + MENU_DIV.width - nextPageBtn.rec.width;
+            Button prevPageBtn(RETURN_BTN_REC, " << ", []() {curHistoryPage -= 1;});
+            prevPageBtn.rec.x = nextPageBtn.rec.x - prevPageBtn.rec.width - 20.0f;
+
+            Record* records = GetRecords(RECORDS_PER_PAGE, curHistoryPage);
+
+            // Update
+            if(curHistoryPage == 0) prevPageBtn.active = false;
+            if(!GetRecords(RECORDS_PER_PAGE, curHistoryPage+1)) nextPageBtn.active = false;
+
+            returnBtn.update();
+            nextPageBtn.update();
+            prevPageBtn.update();
+            
+            // Draw
+            BeginDrawing();
+                ClearBackground(BLACK);
+                DrawTitle("History");
+                for(int i=0; i<ItemsInPage(RECORDS_PER_PAGE, curHistoryPage); i++) {
+                    DrawRecord(RECORDS_PER_PAGE*curHistoryPage + i, records[i], {MENU_DIV.x, MENU_DIV.y + 30.0f*i});
+                }
+                returnBtn.draw();
+                nextPageBtn.draw();
+                prevPageBtn.draw();
+            EndDrawing();
             break;
         }
         case EXIT: {

@@ -10,6 +10,8 @@
 #include <random>
 #include <chrono>
 
+#define MENU_DIV_H 600
+#define MENU_DIV_W 900
 #define TABLE_W 1400
 #define TABLE_H 700
 #define COSTUMER_DIV_H 250
@@ -18,6 +20,7 @@
 
 extern Rectangle COSTUMER_DIV;
 extern Rectangle CARD_TABLE;
+extern Rectangle MENU_DIV;
 
 const unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 static std::default_random_engine rng(seed);
