@@ -1,4 +1,3 @@
-#include <vector>
 #include "constants.h"
 #include "cards.h"
 #include "costumer.h"
@@ -8,7 +7,6 @@
 using namespace std;
 
 GameState curGameState = MAIN_MENU;
-int curHistoryPage = 0;
 
 Rectangle COSTUMER_DIV;
 Rectangle CARD_TABLE;
@@ -164,31 +162,17 @@ int main () {
         }
         case HISTORY: {
             Button returnBtn(RETURN_BTN_REC, "Return", []() {curGameState = MAIN_MENU;});
-            Button nextPageBtn(RETURN_BTN_REC, " >> ", []() {curHistoryPage += 1;});
-            nextPageBtn.rec.x = MENU_DIV.x + MENU_DIV.width - nextPageBtn.rec.width;
-            Button prevPageBtn(RETURN_BTN_REC, " << ", []() {curHistoryPage -= 1;});
-            prevPageBtn.rec.x = nextPageBtn.rec.x - prevPageBtn.rec.width - 20.0f;
-
-            Record* records = GetRecords(RECORDS_PER_PAGE, curHistoryPage);
 
             // Update
-            if(curHistoryPage == 0) prevPageBtn.active = false;
-            if(!GetRecords(RECORDS_PER_PAGE, curHistoryPage+1)) nextPageBtn.active = false;
-
             returnBtn.update();
-            nextPageBtn.update();
-            prevPageBtn.update();
+            UpdateHistory();
             
             // Draw
             BeginDrawing();
                 ClearBackground(BLACK);
                 DrawTitle("History");
-                for(int i=0; i<ItemsInPage(RECORDS_PER_PAGE, curHistoryPage); i++) {
-                    DrawRecord(RECORDS_PER_PAGE*curHistoryPage + i, records[i], {MENU_DIV.x, MENU_DIV.y + 30.0f*i});
-                }
+                DrawHistory();
                 returnBtn.draw();
-                nextPageBtn.draw();
-                prevPageBtn.draw();
             EndDrawing();
             break;
         }

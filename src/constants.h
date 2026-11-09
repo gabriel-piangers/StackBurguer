@@ -21,6 +21,7 @@
 extern Rectangle COSTUMER_DIV;
 extern Rectangle CARD_TABLE;
 extern Rectangle MENU_DIV;
+extern Rectangle RETURN_BTN_REC;
 
 const unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 static std::default_random_engine rng(seed);

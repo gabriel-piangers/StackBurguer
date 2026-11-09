@@ -2,13 +2,11 @@
 #define UI_H
 
 #include "constants.h"
-#include "history.h"
 
 #define HOVER_COLOR (Color) {32, 32, 32}
 #define INACTIVE_COLOR (Color) {0, 0, 0}
 #define TITLE_HEIGHT 100
 #define TITLE_FONT_SIZE 48.0f
-#define RECORD_FONT_SIZE 24.0f
 
 struct Button {
     Rectangle rec;
@@ -28,6 +26,5 @@ struct Button {
 
 // Exports
 void DrawTitle(std::string text);
-void DrawRecord(int i, Record& record, Vector2 pos);
 
 #endif
