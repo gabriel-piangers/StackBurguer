@@ -36,27 +36,6 @@ struct Costumer {
     float score();
 };
 
-// Make it a separeted class with template structure
-struct QueueNode {
-    Costumer costumer;
-    QueueNode* next;
-
-    QueueNode(Costumer c): costumer(c), next(nullptr) {}
-};
-
-struct Queue {
-    int size;
-    QueueNode* start;
-    QueueNode* end;
-
-    Queue(): size(0), start(nullptr), end(nullptr) {}
-
-    void insert(Costumer costumer);
-    Costumer pop();
-    void clear();
-    bool empty();
-};
-
 // Exports
 void InitCostumers();
 void DrawCostumers();

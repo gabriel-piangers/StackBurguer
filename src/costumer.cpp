@@ -2,11 +2,12 @@
 #include "cards.h"
 #include "reasings.h"
 #include "avl.h"
+#include "queue.h"
 #include <raymath.h>
 
 Costumer costumers[COSTUMER_AMOUNT];
 Costumer emptyCostumer;
-Queue costumerQueue;
+Queue<Costumer> costumerQueue;
 
 Vector2 GetCostumerPos(int i) {
     return {COSTUMER_DIV.x + i*COSTUMER_DIV.width/COSTUMER_AMOUNT, COSTUMER_DIV.y};
@@ -141,47 +142,3 @@ float Costumer::score() {
     this->timer = 0.0f;
     return this->difficulty * this->state;
 }
-
-void Queue::insert(Costumer c) {
-    QueueNode* node = new QueueNode(c);
-    if(!this->start) {
-        this->start = node;
-        this->end = node;
-    } else {
-        this->end->next = node;
-        this->end = node;
-    }
-    
-    this->size++;
-}
-
-Costumer Queue::pop() {
-    if(!this->start) return emptyCostumer;
-
-    QueueNode* node = this->start;
-    Costumer c = node->costumer;
-    
-    this->start = this->start->next;
-    delete node;
-    this->size--;
-
-    return c;
-}
-
-void Queue::clear() {
-    QueueNode* cur = this->start;
-    while(cur) {
-        QueueNode* prev = cur;
-        cur = cur->next;
-        delete prev;
-    }
-
-    this->start = nullptr;
-    this->end = nullptr;
-    this->size = 0;
-}
-
-bool Queue::empty() {
-    return this->size==0;
-}
-
