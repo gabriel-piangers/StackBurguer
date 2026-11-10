@@ -114,7 +114,7 @@ int main () {
 
     InitGame();
     LoadTextures();
-    InitHistory("data/historico.txt");
+    InitHistory("");
     InitAVL("data/pedidos.txt");
 
     while (!WindowShouldClose()) {
@@ -154,7 +154,10 @@ int main () {
         }
         case IN_GAME: {
             // Update
-            if(IsGameOver()) curGameState = GAME_OVER;
+            if(IsGameOver()) {
+                AddRecord(game.userName, game.score);
+                curGameState = GAME_OVER;
+            }
             game.time += GetFrameTime();
             UpdateCards(game);
             UpdateCostumers();

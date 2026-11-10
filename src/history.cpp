@@ -6,8 +6,10 @@
 
 using namespace std;
 
+string filePath;
 DynamicVector<Record> history;
 int curPage = 0;
+
 HistoryField selectedField = NONE;
 bool sortingAsc = false;
 
@@ -30,24 +32,11 @@ Button scoreFieldBtn({0}, "Score", []() {
 Button nextPageBtn({0}, " >> ", []() {curPage++;});
 Button prevPageBtn({0}, " << ", []() {curPage--;});
 
-void InitHistory(string path = "") {
-    const float headerHeight = RECORD_FONT_SIZE + HISTORY_HEADER_PAD*2.0f;
-    noneFieldBtn.rec = {MENU_DIV.x, MENU_DIV.y - headerHeight, MENU_DIV.width*0.1f, headerHeight}; 
-    nameFieldBtn.rec = {noneFieldBtn.rec.x + noneFieldBtn.rec.width, MENU_DIV.y - headerHeight, MENU_DIV.width*0.7f, headerHeight};
-    scoreFieldBtn.rec = {nameFieldBtn.rec.x + nameFieldBtn.rec.width, MENU_DIV.y - headerHeight, MENU_DIV.width*0.2f, headerHeight};
-    
-    nextPageBtn.rec = {MENU_DIV.x + MENU_DIV.width - RETURN_BTN_REC.width, RETURN_BTN_REC.y, RETURN_BTN_REC.width, RETURN_BTN_REC.height};
-    prevPageBtn.rec = {nextPageBtn.rec.x - RETURN_BTN_REC.width - 10.0f, RETURN_BTN_REC.y, RETURN_BTN_REC.width, RETURN_BTN_REC.height};
-
+void LoadHistory() {
     Timer timer;
     timer_iniciar(&timer);
 
-    if(path.size() == 0) {
-        cout << "[INFO] No history file informed!\n";
-        return;
-    }
-
-    ifstream file(path);
+    ifstream file(filePath);
 
     if(!file.is_open()) {
         cerr << "[Error] Failed to open history file\n";
@@ -60,16 +49,29 @@ void InitHistory(string path = "") {
     string scoreStr;
     while(getline(file, name)) {
         getline(file, scoreStr);
-        float score = stof(scoreStr);
+        float score = std::stof(scoreStr);
         history.insert((Record) {name, score});
     }
 
     file.close();
-    cout << "InitHistory execution time: " << timer_parar(&timer) << " seconds \n";
+    cout << "LoadHistory execution time: " << timer_parar(&timer) << " seconds \n";
+}
+
+void InitHistory(string path = "") {
+    const float headerHeight = RECORD_FONT_SIZE + HISTORY_HEADER_PAD*2.0f;
+    noneFieldBtn.rec = {MENU_DIV.x, MENU_DIV.y - headerHeight, MENU_DIV.width*0.1f, headerHeight}; 
+    nameFieldBtn.rec = {noneFieldBtn.rec.x + noneFieldBtn.rec.width, MENU_DIV.y - headerHeight, MENU_DIV.width*0.7f, headerHeight};
+    scoreFieldBtn.rec = {nameFieldBtn.rec.x + nameFieldBtn.rec.width, MENU_DIV.y - headerHeight, MENU_DIV.width*0.2f, headerHeight};
+    
+    nextPageBtn.rec = {MENU_DIV.x + MENU_DIV.width - RETURN_BTN_REC.width, RETURN_BTN_REC.y, RETURN_BTN_REC.width, RETURN_BTN_REC.height};
+    prevPageBtn.rec = {nextPageBtn.rec.x - RETURN_BTN_REC.width - 10.0f, RETURN_BTN_REC.y, RETURN_BTN_REC.width, RETURN_BTN_REC.height};
+
+    filePath = path.size() ? path : "data/historico.txt";
+    LoadHistory();
 }
 
 int ItemsInPage() {
-    if(RECORDS_PER_PAGE*(curPage+1) >= history.size) {
+    if(RECORDS_PER_PAGE*(curPage+1) <= history.size) {
         return RECORDS_PER_PAGE;
     }
     return min(RECORDS_PER_PAGE, history.size - (RECORDS_PER_PAGE*curPage));
@@ -127,6 +129,14 @@ void DrawHistory() {
     }
     nextPageBtn.draw();
     prevPageBtn.draw();
+}
+
+void AddRecord(string name, float score) {
+    Record nRecord = {name, score};
+    history.insert(nRecord);
+    
+    ofstream file(filePath, ios::app);
+    file << "\n" << name << "\n" << to_string(score);
 }
 
 void SortRecordsByScore(bool asc) {

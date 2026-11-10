@@ -23,6 +23,7 @@ struct Record {
 void InitHistory(std::string path);
 void DrawHistory();
 void UpdateHistory();
+void AddRecord(std::string name, float score);
 void SortRecordsByName(bool asc = true);
 void SortRecordsByScore(bool asc = true);
 
