@@ -20,8 +20,25 @@ void InitCards() {
     AddCard(PICKLES, {600, 400});
     AddCard(ONIONS, {800, 400});
     AddCard(EGG_RAW, {1000, 400});
+    AddCard(EGG_RAW, {1000, 400});
+    AddCard(EGG_RAW, {1000, 400});
     AddCard(GRILL, {1200, 700});
     AddCard(CUTTING, {1200, 400});
+    AddCard(SWISS_CHEESE, {1100, 700});
+    AddCard(CHEDDAR, {500, 400});
+    AddCard(LETTUCE, {700, 400});
+    AddCard(BREAD_T, {900, 400});
+    AddCard(BREAD_B, {1100, 400});
+    AddCard(HAMBURGUER_RAW, {1300, 700});
+    AddCard(BACON_RAW, {1300, 400});
+    AddCard(BREAD_T, {900, 400});
+    AddCard(BREAD_B, {1100, 400});
+    AddCard(HAMBURGUER_RAW, {1300, 700});
+    AddCard(BACON_RAW, {1300, 400});
+    AddCard(BREAD_T, {900, 400});
+    AddCard(BREAD_B, {1100, 400});
+    AddCard(HAMBURGUER_RAW, {1300, 700});
+    AddCard(BACON_RAW, {1300, 400});
 }
 
 bool AddCard(Ingredient item, Vector2 pos) {
@@ -34,8 +51,8 @@ bool AddCard(Ingredient item, Vector2 pos) {
     return false;
 }
 
-void UpdateCards() {
-    for(int i=0; i<MAX_CARDS; i++) cards[i].update(&cardPicked);
+void UpdateCards(Game& game) {
+    for(int i=0; i<MAX_CARDS; i++) cards[i].update(&cardPicked, game);
 }
 
 void DrawCards() {
@@ -74,7 +91,7 @@ void Card::draw() {
     }
 }
 
-void Card::update(Card** cPicked) {
+void Card::update(Card** cPicked, Game& game) {
     if(!this->active) return;
 
     // --- Independent update (All cards) ---
@@ -107,7 +124,7 @@ void Card::update(Card** cPicked) {
     if(prev) return;
 
     if(*cPicked == this && IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-        this->place(cPicked);
+        this->place(cPicked, game);
     }
 
     if(picked) {
@@ -153,12 +170,14 @@ Rectangle Card::getStackRec(int extraSize) {
     return (Rectangle) {this->pos.x, this->pos.y, CARD_W, CARD_H + CARD_HEADER_H*(this->size + extraSize - 1)};
 }
 
-void Card::place(Card** cPicked) {
+void Card::place(Card** cPicked, Game& game) {
     bool valid = true;
     Costumer& costumerCol = GetCollisionCostumer(this->getRec());
     if(costumerCol.state != EMPTY) { // Valid collision with Costumer Rec
         if(costumerCol.order.check(this)) {
-            std::cout << "Score: " << costumerCol.score() << "\n";
+            game.score += costumerCol.score();
+            std::cout << "Score: " << game.score << "\n";
+            
             this->destroy();
             *cPicked = nullptr;
             return;

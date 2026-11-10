@@ -32,7 +32,7 @@ Costumer GetRandomCostumer(int difficulty) {
 }
 
 void InitCostumers() {
-    InitAVL("data/pedidos.txt");
+    costumerQueue.clear();
     costumerQueue.insert(GetRandomCostumer(1)); // Easy
     costumerQueue.insert(GetRandomCostumer(1)); // Easy
     costumerQueue.insert(GetRandomCostumer(1)); // Easy
@@ -57,6 +57,17 @@ void UpdateCostumers() {
         if(costumers[i].state != EMPTY) costumers[i].update();
         else if(!costumerQueue.empty()) costumers[i] = costumerQueue.pop();
     }
+}
+
+bool IsGameOver() {
+    if(!costumerQueue.empty()) return false;
+    
+    bool gameOver = true;
+    for(int i=0; i<COSTUMER_AMOUNT; i++) {
+        if(costumers[i].state != EMPTY) gameOver = false;
+    }
+
+    return gameOver;
 }
 
 Texture2D GetCostumerTexture(COSTUMER_STATE state) {
@@ -157,8 +168,20 @@ Costumer Queue::pop() {
     return c;
 }
 
+void Queue::clear() {
+    QueueNode* cur = this->start;
+    while(cur) {
+        QueueNode* prev = cur;
+        cur = cur->next;
+        delete prev;
+    }
+
+    this->start = nullptr;
+    this->end = nullptr;
+    this->size = 0;
+}
+
 bool Queue::empty() {
     return this->size==0;
 }
-
 

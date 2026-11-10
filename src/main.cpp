@@ -1,17 +1,20 @@
 #include "constants.h"
+#include "history.h"
 #include "cards.h"
 #include "costumer.h"
-#include "history.h"
+#include "avl.h"
 #include "ui.h"
 
 using namespace std;
 
 GameState curGameState = MAIN_MENU;
+Game game;
 
 Rectangle COSTUMER_DIV;
 Rectangle CARD_TABLE;
 Rectangle MENU_DIV;
 Rectangle RETURN_BTN_REC;
+Rectangle MENU_BTN_REC;
 
 Texture2D BREAD_B_TEXTURE;
 Texture2D BREAD_T_TEXTURE;
@@ -100,6 +103,7 @@ void InitGame() {
     COSTUMER_DIV = {(GetMonitorWidth(curMon) - TABLE_W)/2.0f, GAME_MARGIN, TABLE_W, COSTUMER_DIV_H};
     CARD_TABLE = {(GetMonitorWidth(curMon) - TABLE_W)/2.0f, COSTUMER_DIV_H + GAME_MARGIN + TABLE_PAD, TABLE_W, TABLE_H};
     RETURN_BTN_REC = {MENU_DIV.x, MENU_DIV.y + MENU_DIV_H + 20.0f, 100.0f, 50.0f};
+    MENU_BTN_REC = {(GetScreenWidth() - 300)/2.0f, (GetScreenHeight() - 50)/2.0f, 300.0f, 50.0f};
 }
 
 int main () {
@@ -110,9 +114,8 @@ int main () {
 
     InitGame();
     LoadTextures();
-    InitCards();
-    InitCostumers();
     InitHistory("data/historico.txt");
+    InitAVL("data/pedidos.txt");
 
     while (!WindowShouldClose()) {
         if(!IsWindowFocused()) {
@@ -121,11 +124,10 @@ int main () {
 
         switch (curGameState) {
         case MAIN_MENU: {
-            Rectangle MenuBtnRec = {(GetScreenWidth() - 300)/2.0f, (GetScreenHeight() - 50)/2.0f, 300.0f, 50.0f};
-            Button playBtn(MenuBtnRec, "New Game", []() {curGameState = IN_GAME;});
-            Button historyBtn(MenuBtnRec, "History", []() {curGameState = HISTORY;});
+            Button playBtn(MENU_BTN_REC, "New Game", []() {curGameState = START_GAME;});
+            Button historyBtn(MENU_BTN_REC, "History", []() {curGameState = HISTORY;});
             historyBtn.rec.y += 70.0f;
-            Button exitBtn(MenuBtnRec, "Exit", []() {curGameState = EXIT;});
+            Button exitBtn(MENU_BTN_REC, "Exit", []() {curGameState = EXIT;});
             exitBtn.rec.y += 2*70.0f;
             Button buttons[] = {playBtn, historyBtn, exitBtn};
 
@@ -144,9 +146,17 @@ int main () {
 
             break;
         }
+        case START_GAME: {
+            InitCards();
+            InitCostumers();
+            game = {0.0f, 0.0f, "ME :/"};
+            curGameState = IN_GAME;
+        }
         case IN_GAME: {
             // Update
-            UpdateCards();
+            if(IsGameOver()) curGameState = GAME_OVER;
+            game.time += GetFrameTime();
+            UpdateCards(game);
             UpdateCostumers();
             
             // Draw
@@ -156,6 +166,32 @@ int main () {
                 DrawRectangleLinesEx(COSTUMER_DIV, 2, PURPLE);
                 DrawCostumers();
                 DrawCards();
+
+                //HUD
+                const char* scoreTxt = TextFormat("Score: %.2f", game.score);
+                const float fontSize = 20.0f;
+                DrawText(scoreTxt, 25.0f, 25.0f, fontSize, RED);
+                DrawText(TextFormat("Time: %.2f", game.time), 35.0f + MeasureText(scoreTxt, fontSize), 25.0f, fontSize, RED);
+            EndDrawing();
+
+            break;
+        }
+        case GAME_OVER: {
+            Button playBtn(MENU_BTN_REC, "Play again", []() {curGameState = START_GAME;});
+            Button menuBtn(MENU_BTN_REC, "Return to Menu", []() {curGameState = MAIN_MENU;});
+            menuBtn.rec.y += 70.0f;
+            
+            // Update
+            playBtn.update();
+            menuBtn.update();
+
+            // Draw
+            BeginDrawing();
+                ClearBackground(BLACK);
+                DrawTitle("Game Over");
+                DrawText(TextFormat("Score: %.2f", game.score), playBtn.rec.x, playBtn.rec.y - 50.0f, 24, RED);
+                playBtn.draw();
+                menuBtn.draw();
             EndDrawing();
 
             break;

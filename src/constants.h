@@ -79,9 +79,19 @@ enum Ingredient {
 
 enum GameState {
     MAIN_MENU,
+    START_GAME,
     IN_GAME,
+    GAME_OVER,
     HISTORY,
     EXIT
+};
+
+
+// Structs
+struct Game {
+    float score;
+    float time;
+    std::string userName;
 };
 
 #endif

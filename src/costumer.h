@@ -36,6 +36,7 @@ struct Costumer {
     float score();
 };
 
+// Make it a separeted class with template structure
 struct QueueNode {
     Costumer costumer;
     QueueNode* next;
@@ -52,6 +53,7 @@ struct Queue {
 
     void insert(Costumer costumer);
     Costumer pop();
+    void clear();
     bool empty();
 };
 
@@ -59,6 +61,7 @@ struct Queue {
 void InitCostumers();
 void DrawCostumers();
 void UpdateCostumers();
+bool IsGameOver();
 Costumer& GetCollisionCostumer(Rectangle rec);
 
 #endif

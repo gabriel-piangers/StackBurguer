@@ -44,9 +44,9 @@ struct Card{
 
     // Methods
     void draw();
-    void update(Card** cPicked);
+    void update(Card** cPicked, Game& game);
     void pickup(Card** cPicked);
-    void place(Card** cPicked);
+    void place(Card** cPicked, Game& game);
     void insert(Card* card);
     void destroy();
     bool isPositionValid(Card* cardCol);
@@ -154,7 +154,7 @@ const CardParams cParams[] = {
 
 // Exports
 void InitCards();
-void UpdateCards();
+void UpdateCards(Game& game);
 void DrawCards();
 bool AddCard(Ingredient item, Vector2 pos);
 Card* GetCollisionCards(Card* c);
