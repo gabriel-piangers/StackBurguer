@@ -59,13 +59,16 @@ struct DynamicVector {
 
 template <typename T, typename Comp, typename Swap>
 int Partition(T* A, int a, int b, Comp _comp, Swap _swap) {
+    // Find the median
     int mid = (a+b)/2, median=a;
     if(_comp(A[mid], A[b]) ^ _comp(A[mid], A[a])) median = mid;
     else if (_comp(A[b], A[mid]) ^ _comp(A[b], A[a])) median = b;
+    _swap(A[b], A[median]);
 
-    T pivot = A[median];
+    // Partionate
+    T pivot = A[b];
     int i=a-1, j;
-    for(j=a; j<b-1; j++) {
+    for(j=a; j<b; j++) {
         if(_comp(A[j], pivot)) {
             _swap(A[++i], A[j]);
         }
