@@ -10,11 +10,14 @@ struct DynamicVector {
     int capacity;
     T* data;
 
-    DynamicVector(int _capacity = 2): size(0), capacity(_capacity) {
-        if(_capacity > 2) {
-            this->data = (T*) new T[_capacity];
-        } else {
-            this->data = (T*) new T[2];
+    DynamicVector(): size(0), capacity(2) {
+        this->data = new T[2];
+    }
+
+    DynamicVector(int _size, T val): size(_size), capacity(_size) {
+        this->data = new T[_size];
+        for(int i=0; i<_size; i++) {
+            this->data[i] = val;
         }
     }
 

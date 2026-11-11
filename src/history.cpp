@@ -136,7 +136,7 @@ void AddRecord(string name, float score) {
     history.insert(nRecord);
     
     ofstream file(filePath, ios::app);
-    file << "\n" << name << "\n" << to_string(score);
+    file << name << "\n" << to_string(score) << "\n";
 }
 
 void SortRecordsByScore(bool asc) {
