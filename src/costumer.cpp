@@ -3,6 +3,7 @@
 #include "reasings.h"
 #include "avl.h"
 #include "queue.h"
+#include "utils.h"
 #include <raymath.h>
 
 Costumer costumers[COSTUMER_AMOUNT];
@@ -26,9 +27,7 @@ Costumer& GetCollisionCostumer(Rectangle rec) {
 
 Costumer GetRandomCostumer(int difficulty) {
     difficulty = (int) Clamp(1.0, (float) difficulty, 4.0);
-    std::uniform_real_distribution<float> dist(2.0f*difficulty, 2.0f*difficulty + 2.0f);
-    float d = dist(rng);
-
+    float d = RandomFloat(difficulty*2.0f, (difficulty+1)*2.0f);
     return GetCostumerByDifficulty(d);
 }
 

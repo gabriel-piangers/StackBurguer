@@ -49,6 +49,11 @@ Ingredient GetUnpreparedItem(Ingredient item) {
     }
 }
 
+float RandomFloat(float a, float b) {
+    if(a > b) return RandomFloat(b, a);
+    return (float) (a + rand() % (int) (b-a)) + (float) rand() / (float) RAND_MAX;
+}
+
 float GetCostumerDifficulty(std::string recipe, float patience) {
     float difficulty = 1.0f; // Accounts for the bottom bread
     for(int i=0; recipe[i]!=0; i++) {

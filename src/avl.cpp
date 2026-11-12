@@ -1,16 +1,19 @@
 #include "avl.h"
 #include "timer.h"
+#include "hash_table.h"
+#include "utils.h"
 #include <fstream>
 #include <random>
 
 using namespace std;
 
 AVL avl;
-static uniform_real_distribution<float> dist(30.0f, 90.0f);
+HashTable<int, AVL_node> cache;
 
 void InitAVL(string path) {
     Timer timer;
     timer_iniciar(&timer);
+    
     ifstream file(path); // read-only
     if(!file.is_open()) {
         cerr << "Error opening the file in path " << path << "\n";
@@ -19,7 +22,7 @@ void InitAVL(string path) {
     string order;
     while(getline(file, order)) {
         getline(file, order);
-        float patience = dist(rng);       
+        float patience = RandomFloat(45.0f, 90.0f);       
         avl.insert(order, patience);
     }
 
@@ -27,9 +30,22 @@ void InitAVL(string path) {
     cout << "InitAVL execution time: " << timer_parar(&timer) << " seconds\n";
 }
 
+int ApplyDifficultyMargin(float d) {
+    return (int) (d/DIFFICULTY_MARGIN);
+}
+
 Costumer GetCostumerByDifficulty(float d) {
+    AVL_node* cached = cache.get(ApplyDifficultyMargin(d));
+    if(cached){
+        cout << "Cache hit!\n";
+        return Costumer(cached->order, cached->patience);
+    }
+
     AVL_node* node = avl.search(d);
-    return Costumer(node->order, node->patience);
+    Costumer costumer = Costumer(node->order, node->patience);
+    cache.insert(ApplyDifficultyMargin(costumer.difficulty), *node);
+    
+    return costumer;
 }
 
 int GetFb(AVL_node* node) {

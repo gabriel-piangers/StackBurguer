@@ -5,6 +5,7 @@
 
 Ingredient CharToItem(char c);
 Ingredient GetUnpreparedItem(Ingredient item);
+float RandomFloat(float a, float b);
 float GetCostumerDifficulty(std::string recipe, float patience);
 
 #endif
