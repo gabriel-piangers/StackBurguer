@@ -39,7 +39,7 @@ struct HashTable {
         
         this->size++;
 
-        if(this->size/this->capacity >= 0.75) this->rehash();
+        if((float)this->size/(float)this->capacity >= 0.75) this->rehash();
     }
 
     inline void remove(Key key) {
@@ -79,13 +79,14 @@ struct HashTable {
             HashNode<Key, Value>* cur = this->data[i];
             while(cur) {
                 int index = defaultHash(nCapacity, cur->key);
+                HashNode<Key, Value>* next = cur->next;
                 if(nData[index]) {
                     HashNode<Key, Value>* tmp = nData[index];
                     nData[index] = cur;
                     cur->next = tmp;
                 } else nData[index] = cur;
 
-                cur = cur->next;
+                cur = next;
             }
         }
 
