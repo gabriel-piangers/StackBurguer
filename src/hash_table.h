@@ -23,12 +23,14 @@ struct HashTable {
     int size;
     int capacity;
 
-    HashTable(): data(nullptr), size(0), capacity(8) {
+    HashTable(): data(nullptr), size(0), capacity(4) {
         this->data = new HashNode<Key, Value>*[this->capacity];
         for(int i=0; i<this->capacity; i++) this->data[i] = nullptr;
     }
     
     inline void insert(Key key, Value item) {
+        if(this->get(key)) return;
+
         int index = defaultHash(this->capacity, key);
         HashNode<Key, Value>* node = new HashNode<Key, Value>(key, item);
         if(this->data[index]) {
@@ -70,6 +72,20 @@ struct HashTable {
         return nullptr;
     }
 
+    inline void print() { //debugging
+        for(int i=0; i<this->capacity; i++) {
+            std::cout << i << ": ";
+            if(this->data[i]) {
+                HashNode<Key, Value>* cur = this->data[i];
+                while(cur) {
+                    std::cout << cur->key << " -> ";
+                    cur = cur->next;
+                }
+            } else std::cout << "null";
+            std::cout << "\n";
+        }
+    }
+
     inline void rehash() {
         int nCapacity = this->capacity*2;
         HashNode<Key, Value>** nData = new HashNode<Key, Value>*[nCapacity];
@@ -78,8 +94,10 @@ struct HashTable {
         for(int i=0; i<this->capacity; i++) {
             HashNode<Key, Value>* cur = this->data[i];
             while(cur) {
-                int index = defaultHash(nCapacity, cur->key);
                 HashNode<Key, Value>* next = cur->next;
+                cur->next = nullptr;
+                
+                int index = defaultHash(nCapacity, cur->key);
                 if(nData[index]) {
                     HashNode<Key, Value>* tmp = nData[index];
                     nData[index] = cur;
