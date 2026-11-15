@@ -2,6 +2,7 @@
 #define DYNAMIC_VECTOR_H
 
 #include <algorithm>
+#include <iostream>
 #include <functional>
 
 template <typename T>
