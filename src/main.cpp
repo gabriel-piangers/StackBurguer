@@ -2,6 +2,7 @@
 #include "history.h"
 #include "cards.h"
 #include "costumer.h"
+#include "event_system.h"
 #include "avl.h"
 #include "ui.h"
 
@@ -37,6 +38,8 @@ Texture2D EGG_TEXTURE;
 Texture2D GRILL_TEXTURE;
 Texture2D CUTTING_TEXTURE;
 
+Texture2D ROTTEN_TAG_TEXTURE;
+
 Texture2D COSTUMER_HAPPY_TEXTURE;
 Texture2D COSTUMER_NORMAL_TEXTURE;
 Texture2D COSTUMER_MAD_TEXTURE;
@@ -64,6 +67,8 @@ void LoadTextures() {
     GRILL_TEXTURE = LoadTexture("assets/items/Grill.png");
     CUTTING_TEXTURE = LoadTexture("assets/items/Cutting_board.png");
     
+    ROTTEN_TAG_TEXTURE = LoadTexture("assets/Rotten_tag.png");
+
     COSTUMER_HAPPY_TEXTURE = LoadTexture("assets/Costumer_happy.png");
     COSTUMER_NORMAL_TEXTURE = LoadTexture("assets/Costumer_normal.png");
     COSTUMER_MAD_TEXTURE = LoadTexture("assets/Costumer_mad.png");
@@ -91,6 +96,7 @@ void UnloadTextures() {
     UnloadTexture(EGG_TEXTURE);
     UnloadTexture(GRILL_TEXTURE);
     UnloadTexture(CUTTING_TEXTURE);
+    UnloadTexture(ROTTEN_TAG_TEXTURE);
     UnloadTexture(COSTUMER_HAPPY_TEXTURE);
     UnloadTexture(COSTUMER_NORMAL_TEXTURE);
     UnloadTexture(COSTUMER_MAD_TEXTURE);
@@ -161,6 +167,7 @@ int main () {
             game.time += GetFrameTime();
             UpdateCards(game);
             UpdateCostumers();
+            UpdateEventSystem();
             
             // Draw
             BeginDrawing();

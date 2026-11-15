@@ -15,7 +15,7 @@ bool Recipe::check(Card* stack) {
     if(stack->size < this->size) return false;
     RecipeItem* cur = this->start;
     while(cur) {
-        if(cur->item != stack->type) return false;
+        if(cur->item != stack->type || stack->rotten) return false;
         cur = cur->next;
         stack = stack->next;
     }

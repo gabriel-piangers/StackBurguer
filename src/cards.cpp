@@ -3,6 +3,7 @@
 
 Card cards[MAX_CARDS];
 Card* cardPicked = nullptr;
+int idCount = 0;
 
 void ResetCards() {
     for(int i=0; i<MAX_CARDS; i++) cards[i].active = false;
@@ -10,12 +11,8 @@ void ResetCards() {
 
 void InitCards() {
     ResetCards();
-    AddCard(BREAD_B, {1400, 700});
-    AddCard(BREAD_T, {1400, 400});
     AddCard(MUSTARD, {400, 700});
     AddCard(TOMATO, {600, 700});
-    AddCard(HAMBURGUER_RAW, {800, 700});
-    AddCard(BACON_RAW, {1000, 700});
     AddCard(KETCHUP, {400, 400});
     AddCard(PICKLES, {600, 400});
     AddCard(ONIONS, {800, 400});
@@ -45,6 +42,9 @@ bool AddCard(Ingredient item, Vector2 pos) {
     for(int i=0; i<MAX_CARDS; i++) {
         if(!cards[i].active) {
             cards[i] = Card(pos, item);
+            cards[i].setType(item);
+            // We can't call setType in the constructor because `cards[i] = Card(...)` creates a tmp copy what causes dangling pointer issues 
+            idCount++;
             return true;
         }
     }
@@ -88,6 +88,15 @@ void Card::draw() {
     if(!this->next) {
         DrawRectangle(rec.x + CARD_PAD*scale, rec.y + (CARD_HEADER_H + CARD_PAD)*scale, (CARD_W - CARD_PAD*2)*scale, (CARD_H - CARD_HEADER_H - CARD_PAD*2)*scale, WHITE);
         DrawTextureEx(this->getTexture(), {rec.x + (CARD_W - this->getTexture().width)*scale/2, rec.y + (CARD_H + CARD_HEADER_H - this->getTexture().height)*scale/2}, 0.0f, scale, WHITE);
+        if(this->rotten) {
+            DrawTextureEx(
+                ROTTEN_TAG_TEXTURE,
+                {
+                    rec.x + CARD_W*scale - (CARD_PAD*2.0f + ROTTEN_TAG_TEXTURE.width)*scale, 
+                    rec.y + CARD_H*scale - (CARD_PAD*2.0f + ROTTEN_TAG_TEXTURE.height)*scale
+                },
+                0.0f, scale, WHITE);
+        }
     }
 }
 
@@ -158,6 +167,10 @@ float Card::getPrepTime() {
     return cParams[this->type].prepTime;
 }
 
+float Card::getRotTime() {
+    return cParams[this->type].rotTime;
+}
+
 std::function<void(Card*)> Card::getEvent() {
     return cParams[this->type].event;
 }
@@ -168,6 +181,17 @@ Rectangle Card::getRec() {
 }
 Rectangle Card::getStackRec(int extraSize) {
     return (Rectangle) {this->pos.x, this->pos.y, CARD_W, CARD_H + CARD_HEADER_H*(this->size + extraSize - 1)};
+}
+
+void Card::setType(Ingredient nType) {
+    this->type = nType;
+    if(this->getRotTime()) {
+        Schedule(this->id, this->getRotTime(), [this, nType]() {
+            if(this->type != nType) return;
+            std::cout << this->getTitle() << " has rotten\n";
+            this->rotten = true;
+        });
+    }
 }
 
 void Card::place(Card** cPicked, Game& game) {
@@ -247,6 +271,7 @@ bool Card::isPositionValid(Card* cardCol) {
 
 void Card::destroy() {
     auto f = [](Card* c, int i) {
+        Unschedule(c->id);
         c->active = false;
     };
     this->propagate(f);
