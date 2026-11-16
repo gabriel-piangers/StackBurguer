@@ -2,6 +2,7 @@
 #include "timer.h"
 #include "hash_table.h"
 #include "utils.h"
+#include "metrics.h"
 #include <fstream>
 #include <random>
 
@@ -27,7 +28,11 @@ void InitAVL(string path) {
     }
 
     file.close();
-    cout << "InitAVL execution time: " << timer_parar(&timer) << " seconds\n";
+
+    float time = timer_parar(&timer);
+    SetAvlLoadTime(time);
+    SetAvlHeight(avl.root->h);
+    cout << "AVL load time: " << time << " seconds\n";
 }
 
 int ApplyDifficultyMargin(float d) {
@@ -37,14 +42,19 @@ int ApplyDifficultyMargin(float d) {
 Costumer GetCostumerByDifficulty(float d) {
     AVL_node* cached = cache.get(ApplyDifficultyMargin(d));
     if(cached){
-        cout << "Cache hit!\n";
+        AddCacheHit();
         return Costumer(cached->order, cached->patience);
     }
-
+    
     AVL_node* node = avl.search(d);
     Costumer costumer = Costumer(node->order, node->patience);
     cache.insert(ApplyDifficultyMargin(costumer.difficulty), *node);
     
+    AddCacheMiss();
+    SetCacheCollision(cache.colisions);
+    SetCacheSize(cache.size);
+    SetCacheCapacity(cache.capacity);
+
     return costumer;
 }
 
@@ -72,6 +82,7 @@ void RotateL(AVL_node** root) {
     updateHeight(r);
 
     *root = r;
+    AddAvlRotation();
 }
 
 void RotateR(AVL_node** root) {
@@ -83,6 +94,7 @@ void RotateR(AVL_node** root) {
     updateHeight(l);
 
     *root = l;
+    AddAvlRotation();
 }
 
 
@@ -115,6 +127,7 @@ void Insert(AVL_node** root, string& s, float p, float d) {
 }
 
 AVL_node* SearchClosest(AVL_node* root, float d) { // Retorna o mais proximo
+    AddAvlComp();
     if(!root) return nullptr;
     if(abs(d - root->difficulty) < DIFFICULTY_MARGIN) return root;
     if(d < root->difficulty) return root->left ? SearchClosest(root->left, d) : root;
@@ -133,10 +146,19 @@ void Destroy(AVL_node* root) {
 void AVL::insert(string& s, float p) {
     float d = GetCostumerDifficulty(s, p);
     Insert(&this->root, s, p, d);
+    AddAvlNode();
 }
 
 AVL_node* AVL::search(float d) {
-    return SearchClosest(this->root, d);
+    AddAvlSearch();
+    
+    Timer timer;
+    timer_iniciar(&timer);
+
+    AVL_node* res = SearchClosest(this->root, d);
+
+    AddAvlSearchTime(timer_parar(&timer));
+    return res;
 }
 
 void AVL::destroy() {

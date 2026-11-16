@@ -22,8 +22,9 @@ struct HashTable {
     HashNode<Key, Value>** data;
     int size;
     int capacity;
+    int colisions;
 
-    HashTable(): data(nullptr), size(0), capacity(4) {
+    HashTable(): data(nullptr), size(0), capacity(4), colisions(0) {
         this->data = new HashNode<Key, Value>*[this->capacity];
         for(int i=0; i<this->capacity; i++) this->data[i] = nullptr;
     }
@@ -37,6 +38,7 @@ struct HashTable {
             HashNode<Key, Value>* tmp = this->data[index];
             this->data[index] = node;
             node->next = tmp;
+            this->colisions++;
         } else this->data[index] = node;
         
         this->size++;
@@ -54,8 +56,13 @@ struct HashTable {
                 cur = cur->next;
             }
             if(cur) {
-                if(prev) prev->next = cur->next;
-                else if(cur->next) this->data[index] = cur->next; 
+                if(prev) {
+                    prev->next = cur->next;
+                    this->colisions--;
+                } else if(cur->next) {
+                    this->data[index] = cur->next; 
+                    this->colisions--;
+                }
                 delete cur;
             }
         }
@@ -90,7 +97,7 @@ struct HashTable {
         int nCapacity = this->capacity*2;
         HashNode<Key, Value>** nData = new HashNode<Key, Value>*[nCapacity];
         for(int i=0; i<nCapacity; i++) nData[i] = nullptr;
-
+        this->colisions = 0;
         for(int i=0; i<this->capacity; i++) {
             HashNode<Key, Value>* cur = this->data[i];
             while(cur) {
@@ -102,6 +109,7 @@ struct HashTable {
                     HashNode<Key, Value>* tmp = nData[index];
                     nData[index] = cur;
                     cur->next = tmp;
+                    this->colisions++;
                 } else nData[index] = cur;
 
                 cur = next;

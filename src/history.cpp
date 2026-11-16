@@ -2,6 +2,7 @@
 #include "dynamic_vector.h"
 #include "timer.h"
 #include "ui.h"
+#include "metrics.h"
 #include <fstream>
 
 using namespace std;
@@ -54,6 +55,7 @@ void LoadHistory() {
     }
 
     file.close();
+    SetHistoryEntries(history.size);
     cout << "LoadHistory execution time: " << timer_parar(&timer) << " seconds \n";
 }
 
@@ -154,7 +156,9 @@ void SortRecordsByScore(bool asc) {
     };
     history.sort(_comp, _swap);
 
-    cout << "History sorting time: " << timer_parar(&timer) << " seconds\n";
+    float time = timer_parar(&timer);
+    SetHistorySortingTime(time);
+    cout << "History sorting time: " << time << " seconds\n";
 }
 
 void SortRecordsByName(bool asc) {

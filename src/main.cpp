@@ -5,6 +5,7 @@
 #include "event_system.h"
 #include "avl.h"
 #include "ui.h"
+#include "metrics.h"
 
 using namespace std;
 
@@ -110,6 +111,12 @@ void InitGame() {
     CARD_TABLE = {(GetMonitorWidth(curMon) - TABLE_W)/2.0f, COSTUMER_DIV_H + GAME_MARGIN + TABLE_PAD, TABLE_W, TABLE_H};
     RETURN_BTN_REC = {MENU_DIV.x, MENU_DIV.y + MENU_DIV_H + 20.0f, 100.0f, 50.0f};
     MENU_BTN_REC = {(GetScreenWidth() - 300)/2.0f, (GetScreenHeight() - 50)/2.0f, 300.0f, 50.0f};
+}
+
+void CloseGame() {
+    UnloadTextures();
+    SaveMetrics();
+    CloseWindow();
 }
 
 int main () {
@@ -223,8 +230,7 @@ int main () {
             break;
         }
         case EXIT: {
-            UnloadTextures();
-            CloseWindow();
+            CloseGame();
             return 0;
         }
         default:
@@ -233,6 +239,5 @@ int main () {
     }
 
     // De-initialization
-    UnloadTextures();
-    CloseWindow();
+    CloseGame();
 }
