@@ -5,10 +5,10 @@
 #include "event_system.h"
 
 // Defines
-#define CARD_W 130
-#define CARD_H 180
+#define CARD_W 130.0f
+#define CARD_H 180.0f
 #define CARD_TITLE_SIZE 18
-#define CARD_PAD 6
+#define CARD_PAD 6.0f
 #define CARD_HEADER_H (CARD_TITLE_SIZE + CARD_PAD*2)
 #define CARD_PICKUP_SCALE 1.2f
 #define MAX_CARDS 50
@@ -166,7 +166,8 @@ const CardParams cParams[] = {
 void InitCards();
 void UpdateCards(Game& game);
 void DrawCards();
-bool AddCard(Ingredient item, Vector2 pos);
+void PickCard(Card* c);
+Card* AddCard(Ingredient item, Vector2 pos);
 Card* GetCollisionCards(Card* c);
 
 #endif

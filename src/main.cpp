@@ -2,6 +2,7 @@
 #include "history.h"
 #include "cards.h"
 #include "costumer.h"
+#include "shop.h"
 #include "event_system.h"
 #include "avl.h"
 #include "ui.h"
@@ -163,6 +164,7 @@ int main () {
         case START_GAME: {
             InitCards();
             InitCostumers();
+            InitShop();
             game = {0.0f, 0.0f, "ME :/"};
             curGameState = IN_GAME;
         }
@@ -178,6 +180,7 @@ int main () {
             game.time += GetFrameTime();
             UpdateCards(game);
             UpdateCostumers();
+            UpdateShop();
             UpdateEventSystem();
             
             // Draw
@@ -186,6 +189,7 @@ int main () {
                 DrawRectangleLinesEx(CARD_TABLE, 2, RED);
                 DrawRectangleLinesEx(COSTUMER_DIV, 2, PURPLE);
                 DrawCostumers();
+                DrawShop();
                 DrawCards();
                 DrawHUD(game.time, game.score);
                

@@ -12,44 +12,28 @@ void ResetCards() {
 void InitCards() {
     ClearEventSystem();
     ResetCards();
-    AddCard(MUSTARD, {400, 700});
-    AddCard(TOMATO, {600, 700});
-    AddCard(KETCHUP, {400, 400});
-    AddCard(PICKLES, {600, 400});
-    AddCard(ONIONS, {800, 400});
-    AddCard(EGG_RAW, {1000, 400});
-    AddCard(EGG_RAW, {1000, 400});
-    AddCard(EGG_RAW, {1000, 400});
-    AddCard(GRILL, {1200, 700});
-    AddCard(CUTTING, {1200, 400});
-    AddCard(SWISS_CHEESE, {1100, 700});
-    AddCard(CHEDDAR, {500, 400});
-    AddCard(LETTUCE, {700, 400});
-    AddCard(BREAD_T, {900, 400});
-    AddCard(BREAD_B, {1100, 400});
-    AddCard(HAMBURGUER_RAW, {1300, 700});
-    AddCard(BACON_RAW, {1300, 400});
-    AddCard(BREAD_T, {900, 400});
-    AddCard(BREAD_B, {1100, 400});
-    AddCard(HAMBURGUER_RAW, {1300, 700});
-    AddCard(BACON_RAW, {1300, 400});
-    AddCard(BREAD_T, {900, 400});
-    AddCard(BREAD_B, {1100, 400});
-    AddCard(HAMBURGUER_RAW, {1300, 700});
-    AddCard(BACON_RAW, {1300, 400});
+    AddCard(GRILL, {CARD_TABLE.x, CARD_TABLE.y});
+    AddCard(GRILL, {CARD_TABLE.x + CARD_W + 10.0f, CARD_TABLE.y});
+    AddCard(CUTTING, {CARD_TABLE.x + (CARD_W + 10.0f)*2.0f, CARD_TABLE.y});
 }
 
-bool AddCard(Ingredient item, Vector2 pos) {
+Card* AddCard(Ingredient item, Vector2 pos) {
     for(int i=0; i<MAX_CARDS; i++) {
         if(!cards[i].active) {
             cards[i] = Card(pos, item);
             cards[i].setType(item);
             // We can't call setType in the constructor because `cards[i] = Card(...)` creates a tmp copy what causes dangling pointer issues 
             idCount++;
-            return true;
+            return &cards[i];
         }
     }
-    return false;
+    return nullptr;
+}
+
+void PickCard(Card* c) {
+    if(cardPicked) return;
+
+    c->pickup(&cardPicked);
 }
 
 void UpdateCards(Game& game) {
