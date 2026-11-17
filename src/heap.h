@@ -44,16 +44,22 @@ struct Heap {
     }
 
     inline T pop() {
-        this->data.size--;
+        if(this->empty()) {
+            std::cout << "[ERROR] attempt to pop from an empty heap\n";
+        }
         this->size--;
         T item = this->data[0];
         this->data[0] = this->data[this->size];
         this->siftDown(0);
-
+        this->data.size--;
+        
         return item;
     }
 
     inline T top() {
+        if(this->empty()) {
+            std::cout << "[ERROR] attempt to access top element from an empty heap\n";
+        }
         return this->data[0];
     }
 
@@ -61,12 +67,11 @@ struct Heap {
         for(int i=this->size-1; i>=0; i--) {
             if(f(this->data[i])) {
                 this->size--;
-                this->data.size--;
-                
                 if(i < this->size) {
                     this->data[i] = this->data[this->size];
                     siftDown(i);
                 }
+                this->data.size--;
             }
         }
     }
