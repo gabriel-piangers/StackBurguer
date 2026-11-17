@@ -80,6 +80,7 @@ enum GameState {
     MAIN_MENU,
     START_GAME,
     IN_GAME,
+    GAME_PAUSED,
     GAME_OVER,
     HISTORY,
     EXIT

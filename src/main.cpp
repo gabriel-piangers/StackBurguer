@@ -124,11 +124,12 @@ int main () {
     InitWindow(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()), "My first RAYLIB program!");
     SetTargetFPS(60);
     ToggleBorderlessWindowed();
+    SetExitKey(KEY_NULL);
 
     InitGame();
     LoadTextures();
     InitHistory("");
-    InitAVL("data/pedidos.txt");
+    InitAVL("data/pedidos.txt");    
 
     while (!WindowShouldClose()) {
         if(!IsWindowFocused()) {
@@ -170,7 +171,10 @@ int main () {
             if(IsGameOver()) {
                 AddRecord(game.userName, game.score);
                 curGameState = GAME_OVER;
+            } else if(IsKeyPressed(KEY_ESCAPE)) {
+                curGameState = GAME_PAUSED;
             }
+
             game.time += GetFrameTime();
             UpdateCards(game);
             UpdateCostumers();
@@ -183,12 +187,27 @@ int main () {
                 DrawRectangleLinesEx(COSTUMER_DIV, 2, PURPLE);
                 DrawCostumers();
                 DrawCards();
+                DrawHUD(game.time, game.score);
+               
+            EndDrawing();
 
-                //HUD
-                const char* scoreTxt = TextFormat("Score: %.2f", game.score);
-                const float fontSize = 20.0f;
-                DrawText(scoreTxt, 25.0f, 25.0f, fontSize, RED);
-                DrawText(TextFormat("Time: %.2f", game.time), 35.0f + MeasureText(scoreTxt, fontSize), 25.0f, fontSize, RED);
+            break;
+        }
+        case GAME_PAUSED: {
+            Button continueBtn(MENU_BTN_REC, "Continue", []() {curGameState = IN_GAME;});
+            Button menuBtn(MENU_BTN_REC, "Return to Menu", []() {curGameState = MAIN_MENU;});
+            menuBtn.rec.y += 70.0f;
+
+            // Update
+            continueBtn.update();
+            menuBtn.update();
+
+            BeginDrawing();
+                ClearBackground(BLACK);
+                DrawTitle("Game Paused");
+                continueBtn.draw();
+                menuBtn.draw();
+                DrawHUD(game.time, game.score);
             EndDrawing();
 
             break;

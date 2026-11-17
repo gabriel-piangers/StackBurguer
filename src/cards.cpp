@@ -10,6 +10,7 @@ void ResetCards() {
 }
 
 void InitCards() {
+    ClearEventSystem();
     ResetCards();
     AddCard(MUSTARD, {400, 700});
     AddCard(TOMATO, {600, 700});
@@ -122,7 +123,7 @@ void Card::update(Card** cPicked, Game& game) {
 
     // Debugging
     if(hover && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        std::cout << "size: " << this->size << "\n";
+        std::cout << "Id: " << this->id << " | size: " << this->size << "\n";
         auto f = [](Card* c, int i) {
             std::cout << i << ": " << c->getTitle() << "\n"; 
         };

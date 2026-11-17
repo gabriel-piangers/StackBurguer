@@ -28,3 +28,8 @@ void UpdateEventSystem() {
         topEvent.event();
     };
 }
+
+void ClearEventSystem() {
+    hp.clear();
+    curTime = 0.0f;
+}

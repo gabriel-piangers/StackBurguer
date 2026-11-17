@@ -18,6 +18,7 @@ struct Event {
 void Schedule(int id, float waitTime, std::function<void()> event);
 void Unschedule(int id);
 void UpdateEventSystem();
+void ClearEventSystem();
 
 
 #endif

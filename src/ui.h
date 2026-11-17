@@ -26,5 +26,6 @@ struct Button {
 
 // Exports
 void DrawTitle(std::string text);
+void DrawHUD(float time, float score);
 
 #endif

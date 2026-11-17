@@ -7,6 +7,13 @@ void DrawTitle(std::string text) {
     DrawText(text.c_str(), (GetScreenWidth() - MeasureText(text.c_str(), fontSize))/2, TITLE_HEIGHT, fontSize, WHITE);
 }
 
+void DrawHUD(float time, float score) {
+    const char* scoreTxt = TextFormat("Score: %.2f", score);
+    const float fontSize = 20.0f;
+    DrawText(scoreTxt, 25.0f, 25.0f, fontSize, RED);
+    DrawText(TextFormat("Time: %.2f", time), 35.0f + MeasureText(scoreTxt, fontSize), 25.0f, fontSize, RED);
+}
+
 void Button::draw() {
     Color color;
     if(!this->active) color = ColorLerp(this->color, INACTIVE_COLOR, 0.5f);
