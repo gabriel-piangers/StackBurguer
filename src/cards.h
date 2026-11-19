@@ -9,10 +9,11 @@
 #define CARD_W 130.0f
 #define CARD_H 180.0f
 #define CARD_TITLE_SIZE 18
-#define CARD_PAD 6.0f
+#define CARD_PAD 8.0f
 #define CARD_HEADER_H (CARD_TITLE_SIZE + CARD_PAD*2)
-#define CARD_PICKUP_SCALE 1.2f
+#define CARD_PICKUP_SCALE 1.15f
 #define MAX_CARDS 50
+#define MIN_COLISION_PCT 0.2f
 
 extern int idCount;
 
@@ -46,7 +47,7 @@ struct Card{
     float getPrepTime();
     float getRotTime();
     std::function<void(Card*)> getEvent();
-    Rectangle getRec();
+    Rectangle getRec(bool full = false);
     Rectangle getStackRec(int extraSize = 0);
 
     // Setters

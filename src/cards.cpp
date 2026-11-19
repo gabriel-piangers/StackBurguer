@@ -63,7 +63,10 @@ void DrawCards() {
 Card* GetCollisionCards(Card* c) {
     CardNode* cur = cards.last;
     while(cur) {
-        if(cur->card->active && !cur->card->prev && CheckCollisionRecs(cur->card->getStackRec(), c->getStackRec())) return cur->card;
+        if(cur->card->active && !cur->card->prev) {
+            Rectangle col = GetCollisionRec(cur->card->getStackRec(), c->getStackRec());
+            if(col.width * col.height >= CARD_H * CARD_W * MIN_COLISION_PCT) return cur->card;
+        }
         cur = cur->prev;
     }
     return nullptr;
@@ -73,17 +76,18 @@ Card* GetCollisionCards(Card* c) {
 void Card::draw() {
     if(!this->active) return;
     float scale = picked ? CARD_PICKUP_SCALE : 1.0f;
-    Rectangle rec = getRec();
+    Rectangle rec = getRec(true); // Full rec
 
-    DrawRectanglePro(rec, {0, 0}, 0, this->getColor());
+    DrawRectangleRounded(rec, 0.1f, 100, this->getColor());
+    DrawRectangleRoundedLinesEx(rec, 0.1f, 100, 2.0f, BLACK);
 
     // Header
     DrawText(this->getTitle().c_str(), rec.x + CARD_PAD, rec.y + CARD_PAD, CARD_TITLE_SIZE*scale, BLACK);
-    DrawLine(rec.x, rec.y + (CARD_TITLE_SIZE + 2*CARD_PAD)*scale, rec.x + CARD_W*scale, rec.y + (CARD_TITLE_SIZE + 2*CARD_PAD)*scale, BLACK);
+    DrawLineEx({rec.x, rec.y + (CARD_TITLE_SIZE + 2*CARD_PAD)*scale}, {rec.x + CARD_W*scale, rec.y + (CARD_TITLE_SIZE + 2*CARD_PAD)*scale}, 2.0f, BLACK);
 
     // Body
     if(!this->next) {
-        DrawRectangle(rec.x + CARD_PAD*scale, rec.y + (CARD_HEADER_H + CARD_PAD)*scale, (CARD_W - CARD_PAD*2)*scale, (CARD_H - CARD_HEADER_H - CARD_PAD*2)*scale, WHITE);
+        DrawRectangleRounded({rec.x + CARD_PAD*scale, rec.y + (CARD_HEADER_H + CARD_PAD)*scale, (CARD_W - CARD_PAD*2)*scale, (CARD_H - CARD_HEADER_H - CARD_PAD*2)*scale}, 0.1f, 100, WHITE);
         DrawTextureEx(this->getTexture(), {rec.x + (CARD_W - this->getTexture().width)*scale/2, rec.y + (CARD_H + CARD_HEADER_H - this->getTexture().height)*scale/2}, 0.0f, scale, WHITE);
         if(this->rotten) {
             DrawTextureEx(
@@ -172,9 +176,9 @@ function<void(Card*)> Card::getEvent() {
     return cParams[this->type].event;
 }
 
-Rectangle Card::getRec() {
+Rectangle Card::getRec(bool full) {
     float scale = this->picked ? CARD_PICKUP_SCALE : 1.0f;
-    return (Rectangle) {this->pos.x - CARD_W*(scale - 1.0f)/2, this->pos.y - CARD_H*(scale - 1.0f)/2, CARD_W*scale, this->next ? CARD_HEADER_H*scale : CARD_H*scale};
+    return (Rectangle) {this->pos.x - CARD_W*(scale - 1.0f)/2, this->pos.y - CARD_H*(scale - 1.0f)/2, CARD_W*scale, !full && this->next ? CARD_HEADER_H*scale : CARD_H*scale};
 }
 Rectangle Card::getStackRec(int extraSize) {
     return (Rectangle) {this->pos.x, this->pos.y, CARD_W, CARD_H + CARD_HEADER_H*(this->size + extraSize - 1)};
