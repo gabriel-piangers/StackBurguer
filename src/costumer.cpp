@@ -31,6 +31,19 @@ Costumer GetRandomCostumer(int difficulty) {
     return GetCostumerByDifficulty(d);
 }
 
+void ScheduleNextCostumer(float time) {
+    auto f = [](){
+        for(int i=0; i<COSTUMER_AMOUNT; i++) {
+            if(costumers[i].state == EMPTY) {
+                costumers[i] = costumerQueue.pop();
+                break;
+            }
+        }
+    };
+
+    Schedule(-1, time, f);
+}
+
 void InitCostumers() {
     costumerQueue.clear();
     costumerQueue.insert(GetRandomCostumer(1)); // Easy
@@ -43,9 +56,10 @@ void InitCostumers() {
     costumerQueue.insert(GetRandomCostumer(3)); // Hard
     costumerQueue.insert(GetRandomCostumer(4)); // Very hard
 
-    costumers[0] = costumerQueue.pop();
+    for(int i=0; i<COSTUMER_AMOUNT; i++) costumers[i].state = EMPTY;
     costumers[1] = costumerQueue.pop();
-    costumers[2] = costumerQueue.pop();
+    ScheduleNextCostumer(12.0f);
+    ScheduleNextCostumer(30.0f);
 }
 
 void DrawCostumers() {
@@ -53,10 +67,7 @@ void DrawCostumers() {
 }
 
 void UpdateCostumers() {
-    for(int i=0; i<COSTUMER_AMOUNT; i++) {
-        if(costumers[i].state != EMPTY) costumers[i].update();
-        else if(!costumerQueue.empty()) costumers[i] = costumerQueue.pop();
-    }
+    for(int i=0; i<COSTUMER_AMOUNT; i++) costumers[i].update();
 }
 
 bool IsGameOver() {
@@ -88,12 +99,12 @@ void Costumer::draw(Vector2 pos) {
     Texture2D texture = GetCostumerTexture(this->state);
     switch (state) {
     case ARRIVING: {
-        float scale = EaseLinearIn(this->timer, 0.0f, 1.0f, COSTUMER_WALK_DURATION);
+        float scale = EaseQuadIn(this->timer, 0.0f, 1.0f, COSTUMER_WALK_DURATION);
         DrawTextureEx(texture, pos, 0.0f, scale, WHITE);
         break;
     }
     case LEAVING: {
-        float scale = EaseLinearIn(this->timer, 1.0f, -1.0f, COSTUMER_WALK_DURATION);
+        float scale = EaseQuadOut(this->timer, 1.0f, -1.0f, COSTUMER_WALK_DURATION);
         DrawTextureEx(texture, pos, 0.0f, scale, WHITE);
         break;
     }
@@ -120,6 +131,7 @@ void Costumer::update() {
         if(this->timer >= COSTUMER_WALK_DURATION) {
             this->timer = 0.0f;
             this->state = EMPTY;
+            ScheduleNextCostumer(RandomFloat(2.0f, 5.0f));
         }
         break;
     default:

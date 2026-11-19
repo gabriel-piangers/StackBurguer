@@ -3,8 +3,8 @@
 
 #include "constants.h"
 
-#define HOVER_COLOR (Color) {32, 32, 32}
-#define INACTIVE_COLOR (Color) {0, 0, 0}
+#define HOVER_COLOR (Color) {32, 32, 32, 255}
+#define INACTIVE_COLOR (Color) {0, 0, 0, 255}
 #define TITLE_HEIGHT 100
 #define TITLE_FONT_SIZE 48.0f
 

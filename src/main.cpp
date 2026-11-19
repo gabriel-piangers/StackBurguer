@@ -155,7 +155,7 @@ int main () {
 
             // Draw
             BeginDrawing();
-                ClearBackground(BLACK);
+                ClearBackground(BACKGROUND_COLOR);
                 DrawTitle("DadoBurguer");
                 for(int i=0; i<3; i++) {
                     buttons[i].draw();
@@ -189,7 +189,7 @@ int main () {
             
             // Draw
             BeginDrawing();
-                ClearBackground(BLACK);
+                ClearBackground(BACKGROUND_COLOR);
                 DrawRectangleLinesEx(CARD_TABLE, 2, RED);
                 DrawRectangleLinesEx(COSTUMER_DIV, 2, PURPLE);
                 DrawCostumers();
@@ -211,7 +211,7 @@ int main () {
             menuBtn.update();
 
             BeginDrawing();
-                ClearBackground(BLACK);
+                ClearBackground(BACKGROUND_COLOR);
                 DrawTitle("Game Paused");
                 continueBtn.draw();
                 menuBtn.draw();
@@ -231,7 +231,7 @@ int main () {
 
             // Draw
             BeginDrawing();
-                ClearBackground(BLACK);
+                ClearBackground(BACKGROUND_COLOR);
                 DrawTitle("Game Over");
                 DrawText(TextFormat("Score: %.2f", game.score), playBtn.rec.x, playBtn.rec.y - 50.0f, 24, RED);
                 playBtn.draw();
@@ -249,7 +249,7 @@ int main () {
             
             // Draw
             BeginDrawing();
-                ClearBackground(BLACK);
+                ClearBackground(BACKGROUND_COLOR);
                 DrawTitle("History");
                 DrawHistory();
                 returnBtn.draw();

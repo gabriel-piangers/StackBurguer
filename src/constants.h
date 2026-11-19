@@ -17,6 +17,7 @@
 #define COSTUMER_DIV_H 250
 #define TABLE_PAD 20 
 #define GAME_MARGIN 50
+#define BACKGROUND_COLOR BLACK
 
 extern Rectangle COSTUMER_DIV;
 extern Rectangle CARD_TABLE;
