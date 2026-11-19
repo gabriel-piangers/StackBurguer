@@ -3,12 +3,17 @@
 #include "reasings.h"
 #include "avl.h"
 #include "queue.h"
+#include "dynamic_vector.h"
 #include "utils.h"
+#include "ui.h"
 #include <raymath.h>
+
+using namespace std;
 
 Costumer costumers[COSTUMER_AMOUNT];
 Costumer emptyCostumer;
 Queue<Costumer> costumerQueue;
+DynamicVector<TextPopUp> popUps;
 
 Vector2 GetCostumerPos(int i) {
     return {COSTUMER_DIV.x + i*COSTUMER_DIV.width/COSTUMER_AMOUNT, COSTUMER_DIV.y};
@@ -64,10 +69,15 @@ void InitCostumers() {
 
 void DrawCostumers() {
     for(int i=0; i<COSTUMER_AMOUNT; i++) costumers[i].draw(GetCostumerPos(i));
+    for(int i=0; i<popUps.size; i++) popUps[i].draw();
 }
 
 void UpdateCostumers() {
     for(int i=0; i<COSTUMER_AMOUNT; i++) costumers[i].update();
+    for(int i=0; i<popUps.size; i++) {
+        if(!popUps[i].keepAlive()) popUps.remove(i);
+        else popUps[i].update();
+    }
 }
 
 bool IsGameOver() {
@@ -151,5 +161,11 @@ void Costumer::update() {
 float Costumer::score() {
     this->state = LEAVING;
     this->timer = 0.0f;
-    return this->difficulty * this->state;
+
+    float score = this->difficulty * this->state;
+    string scoreStr = "+" + to_string((int)(score)) + "." + to_string((int)((score - (int)score)*100.0f));
+    TextPopUp popUp(GetMousePosition(), scoreStr);
+    popUps.insert(popUp);
+
+    return score;
 }

@@ -33,7 +33,20 @@ struct DynamicVector {
         if(index >= this->size) {
             std::cerr << "[ERROR] attempt to access an out of bounds index\n";
         }
-        return data[index];
+        return this->data[index];
+    }
+
+    inline void remove(int index) {
+        if(index >= this->size) {
+            std::cerr << "[ERROR] attempt to remove an out of bounds index\n";
+        } else {
+            for(int i=index; i<this->size-1; i++) {
+                this->data[i] = this->data[i+1];
+            }
+            this->size--;
+
+            if(this->size < this->capacity/2) this->reserve(this->capacity/2);
+        }
     }
 
     inline void reserve(int nCapacity) {

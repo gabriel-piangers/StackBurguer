@@ -1,4 +1,5 @@
 #include "ui.h"
+#include "reasings.h"
 
 using namespace std;
 
@@ -42,4 +43,22 @@ void Button::update() {
     if(this->active && this->hover && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         this->event();
     }
+}
+
+void TextPopUp::draw() {
+    if(this->time <= this->duration) {
+        DrawText(this->text.c_str(), this->pos.x, this->pos.y, this->fontSize, this->color);
+    }
+}
+
+void TextPopUp::update() {
+    this->time += GetFrameTime();
+    this->pos.y = EaseLinearIn(this->time, startPos.y, -TEXT_POP_UP_DELTA, this->duration);
+    float fadeTime = this->time - this->duration/2.0f;
+    if(fadeTime >= 0) this->color.a = (int) EaseQuadOut(fadeTime, 255, -255, this->duration/2.0f);
+}
+
+bool TextPopUp::keepAlive() {
+    if(this->time > this->duration) return false;
+    return true;
 }
