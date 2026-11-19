@@ -62,6 +62,8 @@ struct HashTable {
                 } else if(cur->next) {
                     this->data[index] = cur->next; 
                     this->colisions--;
+                } else {
+                    this->data[index] = nullptr;
                 }
                 delete cur;
             }

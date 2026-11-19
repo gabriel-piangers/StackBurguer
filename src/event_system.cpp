@@ -17,10 +17,6 @@ void Unschedule(int id) {
 }
 
 void UpdateEventSystem() {
-    if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        std::cout << "Heap size: " << hp.size << "\n";
-    }
-
     curTime += GetFrameTime();
 
     while(!hp.empty() && hp.top().time <= curTime) {

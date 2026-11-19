@@ -1,16 +1,19 @@
 #include "cards.h"
 #include "costumer.h"
 
-Card cards[MAX_CARDS];
+using namespace std;
+
+CardList cards;
 Card* cardPicked = nullptr;
 int idCount = 0;
 
 void ResetCards() {
-    for(int i=0; i<MAX_CARDS; i++) cards[i].active = false;
+    cards.clear();
 }
 
 void InitCards() {
     ClearEventSystem();
+    cardPicked = nullptr;
     ResetCards();
     AddCard(GRILL, {CARD_TABLE.x, CARD_TABLE.y});
     AddCard(GRILL, {CARD_TABLE.x + CARD_W + 10.0f, CARD_TABLE.y});
@@ -18,30 +21,38 @@ void InitCards() {
 }
 
 Card* AddCard(Ingredient item, Vector2 pos) {
-    for(int i=0; i<MAX_CARDS; i++) {
-        if(!cards[i].active) {
-            cards[i] = Card(pos, item);
-            cards[i].setType(item);
-            // We can't call setType in the constructor because `cards[i] = Card(...)` creates a tmp copy what causes dangling pointer issues 
-            idCount++;
-            return &cards[i];
-        }
-    }
-    return nullptr;
+    Card* nCard = new Card(pos, item);
+    if(!nCard) return nullptr;
+
+    cards.insert(nCard);
+    idCount++;
+    return nCard;
 }
 
 void PickCard(Card* c) {
     if(cardPicked) return;
-
     c->pickup(&cardPicked);
 }
 
-void UpdateCards(Game& game) {
-    for(int i=0; i<MAX_CARDS; i++) cards[i].update(&cardPicked, game);
+void UpdateCards() {
+    auto f = [](Card* c, int i) {
+        if(c->active) c->update(&cardPicked);
+    };
+    cards.propagate(f, true);
+
+    Card* cur = cardPicked;
+    while(cur){
+        cur->update(&cardPicked);
+        cur = cur->next;
+    }
 }
 
 void DrawCards() {
-    for(int i=0; i<MAX_CARDS; i++) if(!cards[i].picked) cards[i].draw();
+    auto f = [](Card* c, int i) {
+        if(c->active && !c->picked) c->draw();
+    };
+    cards.propagate(f);
+
     Card* cur = cardPicked;
     while(cur){
         cur->draw();
@@ -50,9 +61,10 @@ void DrawCards() {
 }
 
 Card* GetCollisionCards(Card* c) {
-    for(int i=0; i<MAX_CARDS; i++) {
-        if(!cards[i].active || cards[i].prev || &cards[i] == c) continue;
-        if(CheckCollisionRecs(cards[i].getStackRec(), c->getStackRec())) return &cards[i];
+    CardNode* cur = cards.last;
+    while(cur) {
+        if(cur->card->active && !cur->card->prev && CheckCollisionRecs(cur->card->getStackRec(), c->getStackRec())) return cur->card;
+        cur = cur->prev;
     }
     return nullptr;
 }
@@ -85,7 +97,7 @@ void Card::draw() {
     }
 }
 
-void Card::update(Card** cPicked, Game& game) {
+void Card::update(Card** cPicked) {
     if(!this->active) return;
 
     // --- Independent update (All cards) ---
@@ -107,9 +119,9 @@ void Card::update(Card** cPicked, Game& game) {
 
     // Debugging
     if(hover && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        std::cout << "Id: " << this->id << " | size: " << this->size << "\n";
+        cout << "Id: " << this->id << " | size: " << this->size << "\n";
         auto f = [](Card* c, int i) {
-            std::cout << i << ": " << c->getTitle() << "\n"; 
+            cout << i << ": " << c->getTitle() << "\n"; 
         };
         this->propagate(f);
     }
@@ -118,7 +130,7 @@ void Card::update(Card** cPicked, Game& game) {
     if(prev) return;
 
     if(*cPicked == this && IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-        this->place(cPicked, game);
+        this->place(cPicked);
     }
 
     if(picked) {
@@ -132,7 +144,7 @@ void Card::update(Card** cPicked, Game& game) {
     }
 }
 
-std::string Card::getTitle() {
+string Card::getTitle() {
     return cParams[this->type].title;
 }
 
@@ -156,7 +168,7 @@ float Card::getRotTime() {
     return cParams[this->type].rotTime;
 }
 
-std::function<void(Card*)> Card::getEvent() {
+function<void(Card*)> Card::getEvent() {
     return cParams[this->type].event;
 }
 
@@ -173,19 +185,18 @@ void Card::setType(Ingredient nType) {
     if(this->getRotTime()) {
         Schedule(this->id, this->getRotTime(), [this, nType]() {
             if(this->type != nType) return;
-            std::cout << this->getTitle() << " has rotten\n";
+            cout << this->getTitle() << " has rotten\n";
             this->rotten = true;
         });
     }
 }
 
-void Card::place(Card** cPicked, Game& game) {
+void Card::place(Card** cPicked) {
     bool valid = true;
     Costumer& costumerCol = GetCollisionCostumer(this->getRec());
     if(costumerCol.state != EMPTY) { // Valid collision with Costumer Rec
         if(costumerCol.order.check(this)) {
-            game.score += costumerCol.score();
-            std::cout << "Score: " << game.score << "\n";
+            AddScore(costumerCol.score());
             
             this->destroy();
             *cPicked = nullptr;
@@ -205,6 +216,7 @@ void Card::place(Card** cPicked, Game& game) {
 
     auto f = [this, valid](Card* c, int i) {
         c->picked = false;
+        cards.insert(c);
         if(!valid) {
             c->pos.x = this->lastPos.x; 
             c->pos.y = this->lastPos.y + i*CARD_HEADER_H;
@@ -229,14 +241,15 @@ void Card::pickup(Card** cPicked) {
     auto f = [this, mousePos](Card* c, int i) {
         c->picked = true;
         c->offset = {c->pos.x - mousePos.x, c->pos.y - mousePos.y};
+        cards.remove(c->id);
     };
     this->propagate(f);
 }
 
 void Card::insert(Card* card) {
-    Card* last = this->propagate([card](Card* c, int i) {c->size+=card->size;});
+    Card* last = this->propagate([card](Card* c, int i) {c->size += card->size;});
     if(last == card) return; // avoids self insertion 
-    std::cout << card->getTitle() << " inserted on " << this->getTitle() << "\n";
+    cout << card->getTitle() << " inserted on " << this->getTitle() << "\n";
     card->prev = last;
     last->next = card;
     auto f = [last](Card* c, int i) {
@@ -262,7 +275,7 @@ void Card::destroy() {
     this->propagate(f);
 }
 
-Card* Card::propagate(std::function<void(Card*, int)> f, bool reverse) {
+Card* Card::propagate(function<void(Card*, int)> f, bool reverse) {
     Card* cur = this;
     Card* last = nullptr;
     int i=0;
@@ -273,4 +286,63 @@ Card* Card::propagate(std::function<void(Card*, int)> f, bool reverse) {
         i++;
     }
     return last;
+}
+
+// CardList methods implementation
+void CardList::insert(Card* c) {
+    CardNode* node = new CardNode(c);
+    if(!this->last) {
+        this->first = node;
+        this->last = node;
+    } else {
+        node->prev = this->last;
+        this->last->next = node;
+        this->last = node;
+    }
+    map.insert(node->card->id, node);
+    this->size++;
+}
+
+Card* CardList::remove(int id) {
+    CardNode** nodeptr = this->map.get(id);
+    if(!nodeptr) {
+        cout << "[ERROR] Removing a non existent node\n";
+        return nullptr;
+    }
+    
+    CardNode* node = *nodeptr;
+    if(!node) return nullptr;
+    
+    if(node->prev) node->prev->next = node->next;
+    else this->first = node->next;
+    
+    if(node->next) node->next->prev = node->prev;
+    else this->last = node->prev;
+    
+    node->prev = nullptr;
+    node->next = nullptr;  
+    
+    this->size--;   
+    this->map.remove(id);
+    return node->card;
+}
+
+void CardList::clear() {
+    CardNode* cur = this->first;
+    while(cur) {
+        CardNode* next = cur->next;
+        delete this->remove(cur->card->id);
+        cur = next;
+    }
+    this->size = 0;
+}
+
+void CardList::propagate(function<void(Card*, int)> f, bool reverse) {
+    CardNode* cur = reverse ? this->last : this->first;
+    int i=0;
+    while(cur) {
+        f(cur->card, i);
+        cur = reverse ? cur->prev : cur->next;
+        i++;
+    }
 }

@@ -94,4 +94,6 @@ struct Game {
     std::string userName;
 };
 
+void AddScore(float score);
+
 #endif

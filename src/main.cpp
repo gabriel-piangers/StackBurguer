@@ -120,6 +120,10 @@ void CloseGame() {
     CloseWindow();
 }
 
+void AddScore(float score) {
+    game.score += score;
+}
+
 int main () {
     // Initialization
     InitWindow(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()), "My first RAYLIB program!");
@@ -178,7 +182,7 @@ int main () {
             }
 
             game.time += GetFrameTime();
-            UpdateCards(game);
+            UpdateCards();
             UpdateCostumers();
             UpdateShop();
             UpdateEventSystem();

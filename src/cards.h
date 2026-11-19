@@ -3,6 +3,7 @@
 
 #include "constants.h"
 #include "event_system.h"
+#include "hash_table.h"
 
 // Defines
 #define CARD_W 130.0f
@@ -53,13 +54,36 @@ struct Card{
 
     // Methods
     void draw();
-    void update(Card** cPicked, Game& game);
+    void update(Card** cPicked);
     void pickup(Card** cPicked);
-    void place(Card** cPicked, Game& game);
+    void place(Card** cPicked);
     void insert(Card* card);
     void destroy();
     bool isPositionValid(Card* cardCol);
     Card* propagate(std::function<void(Card*, int)> f, bool reverse = false);
+};
+
+struct CardNode { // Double linked list
+    Card* card;
+    CardNode* next;
+    CardNode* prev;
+
+    CardNode(Card* c): card(c), next(nullptr), prev(nullptr) {}
+};
+
+struct CardList {
+    CardNode* first;
+    CardNode* last;
+    HashTable<int, CardNode*> map;
+    int size;
+
+    CardList(): first(nullptr), last(nullptr), map(), size(0) {}
+
+    void insert(Card* c);
+    Card* remove(int id);
+    void clear();
+    void propagate(std::function<void(Card*, int)> f, bool reverse = false);
+
 };
 
 // Commom for all cards of the same type (no need to keep track for every copy)
@@ -164,7 +188,7 @@ const CardParams cParams[] = {
 
 // Exports
 void InitCards();
-void UpdateCards(Game& game);
+void UpdateCards();
 void DrawCards();
 void PickCard(Card* c);
 Card* AddCard(Ingredient item, Vector2 pos);
