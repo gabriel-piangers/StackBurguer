@@ -15,3 +15,5 @@ Trabalho final da displina INF01203 - Estruturas de Dados 2026/2, orientado pelo
 ## Limitações Conhecidas
 
  - `InitAVL` leva ~2 segundos de execução por conta da geração de números aleatórios, se possível tentar otimizar.
+ - Ao comprar uma nova carta se o usuário não a arrastar para um lugar válido ela volta para cima da área da loja
+ - Ao inserir uma carta emcima de outra ela vai para o fim da CardList e não para frente da carta onde foi inserido o que causa alguns bugs visuais

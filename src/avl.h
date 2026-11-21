@@ -6,6 +6,8 @@
 #include "costumer.h"
 
 #define DIFFICULTY_MARGIN 0.0001f
+#define PATIENCE_MIN 45.0f
+#define PATIENCE_MAX 75.0f
 
 struct AVL_node {
     std::string order;

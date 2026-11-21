@@ -78,8 +78,8 @@ void Card::draw() {
     float scale = picked ? CARD_PICKUP_SCALE : 1.0f;
     Rectangle rec = getRec(true); // Full rec
 
-    DrawRectangleRounded(rec, 0.1f, 100, this->getColor());
-    DrawRectangleRoundedLinesEx(rec, 0.1f, 100, 2.0f, BLACK);
+    DrawRectangleRounded(rec, CARD_ROUNDNESS, 100, this->getColor());
+    DrawRectangleRoundedLinesEx(rec, CARD_ROUNDNESS, 100, 2.0f, BLACK);
 
     // Header
     DrawText(this->getTitle().c_str(), rec.x + CARD_PAD, rec.y + CARD_PAD, CARD_TITLE_SIZE*scale, BLACK);
@@ -87,7 +87,7 @@ void Card::draw() {
 
     // Body
     if(!this->next) {
-        DrawRectangleRounded({rec.x + CARD_PAD*scale, rec.y + (CARD_HEADER_H + CARD_PAD)*scale, (CARD_W - CARD_PAD*2)*scale, (CARD_H - CARD_HEADER_H - CARD_PAD*2)*scale}, 0.1f, 100, WHITE);
+        DrawRectangleRounded({rec.x + CARD_PAD*scale, rec.y + (CARD_HEADER_H + CARD_PAD)*scale, (CARD_W - CARD_PAD*2)*scale, (CARD_H - CARD_HEADER_H - CARD_PAD*2)*scale}, CARD_ROUNDNESS, 100, WHITE);
         DrawTextureEx(this->getTexture(), {rec.x + (CARD_W - this->getTexture().width)*scale/2, rec.y + (CARD_H + CARD_HEADER_H - this->getTexture().height)*scale/2}, 0.0f, scale, WHITE);
         if(this->rotten) {
             DrawTextureEx(

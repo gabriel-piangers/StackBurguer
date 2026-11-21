@@ -12,6 +12,7 @@
 #define CARD_PAD 8.0f
 #define CARD_HEADER_H (CARD_TITLE_SIZE + CARD_PAD*2)
 #define CARD_PICKUP_SCALE 1.15f
+#define CARD_ROUNDNESS 0.08f
 #define MAX_CARDS 50
 #define MIN_COLISION_PCT 0.2f
 
@@ -119,13 +120,13 @@ const CardParams cParams[] = {
         "Lettuce", GREEN, LETTUCE_TEXTURE, 1, 0.0f, 0.0f, [](Card* c){}
     },
     { // TOMATO    
-        "Tomato", RED, TOMATO_TEXTURE, 1, 1.5f, 0.0f, [](Card* c){}
+        "Tomato", RED, TOMATO_TEXTURE, 1, 2.0f, 0.0f, [](Card* c){}
     },
     { // TOMATO_SLICES   
         "Sliced Tomato", RED, TOMATO_SLICES_TEXTURE, 1, 0.0f, 0.0f, [](Card* c){}
     }, 
     { // ONIONS 
-        "Onion", LIGHTGRAY, ONIONS_TEXTURE, 1, 2.0f, 0.0f, [](Card* c){}
+        "Onion", LIGHTGRAY, ONIONS_TEXTURE, 1, 3.0f, 0.0f, [](Card* c){}
     },
     { // ONIONS_SLICES
         "Sliced Onion", LIGHTGRAY, ONIONS_SLICES_TEXTURE, 1, 0.0f, 0.0f, [](Card* c){}
@@ -137,19 +138,19 @@ const CardParams cParams[] = {
         "Cheddar", ORANGE, CHEDDAR_TEXTURE, 1, 0.0f, 0.0f, [](Card* c){}
     },
     { // HAMBURGUER_RAW
-        "Hamburguer", PINK, HAMBURGUER_RAW_TEXTURE, 1, 5.0f, 120.0f, [](Card* c){}
+        "Hamburguer", PINK, HAMBURGUER_RAW_TEXTURE, 1, 8.0f, 45.0f, [](Card* c){}
     },
     { // HAMBURGUER,
         "Hamburguer", DARKBROWN, HAMBURGUER_TEXTURE, 1, 2.0f, 0.0f, [](Card* c){}
     },
     { // BACON_RAW
-        "Bacon", PINK, BACON_RAW_TEXTURE, 2, 4.0f, 120.0f, [](Card* c){}
+        "Bacon", PINK, BACON_RAW_TEXTURE, 2, 6.0f, 60.0f, [](Card* c){}
     },
     { // BACON
         "Bacon", DARKBROWN, BACON_TEXTURE, 2, 2.0f, 0.0f, [](Card* c){}
     },
     { // EGG_RAW
-        "Egg", LIGHTGRAY, EGG_RAW_TEXTURE, 1, 3.0f, 90.0f, [](Card* c){}
+        "Egg", LIGHTGRAY, EGG_RAW_TEXTURE, 1, 4.5f, 30.0f, [](Card* c){}
     },
     { // EGG
         "Fried Egg", LIGHTGRAY, EGG_TEXTURE, 1, 2.0f, 0.0f, [](Card* c){}

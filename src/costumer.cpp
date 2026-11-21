@@ -25,7 +25,8 @@ Rectangle GetCostumerRec(Vector2 pos) {
 
 Costumer& GetCollisionCostumer(Rectangle rec) {
     for(int i=0; i<COSTUMER_AMOUNT; i++) {
-        if(costumers[i].state != EMPTY && CheckCollisionRecs(GetCostumerRec(GetCostumerPos(i)), rec)) return costumers[i];
+        if(costumers[i].state == EMPTY || costumers[i].state == ARRIVING || costumers[i].state == LEAVING) continue;
+        if(CheckCollisionRecs(GetCostumerRec(GetCostumerPos(i)), rec)) return costumers[i];
     }
     return emptyCostumer;
 }
@@ -37,9 +38,10 @@ Costumer GetRandomCostumer(int difficulty) {
 }
 
 void ScheduleNextCostumer(float time) {
+    if(costumerQueue.empty()) return;
     auto f = [](){
         for(int i=0; i<COSTUMER_AMOUNT; i++) {
-            if(costumers[i].state == EMPTY) {
+            if(costumers[i].state == EMPTY && !costumerQueue.empty()) {
                 costumers[i] = costumerQueue.pop();
                 break;
             }
@@ -63,8 +65,8 @@ void InitCostumers() {
 
     for(int i=0; i<COSTUMER_AMOUNT; i++) costumers[i].state = EMPTY;
     costumers[1] = costumerQueue.pop();
-    ScheduleNextCostumer(12.0f);
-    ScheduleNextCostumer(30.0f);
+    ScheduleNextCostumer(15.0f);
+    ScheduleNextCostumer(40.0f);
 }
 
 void DrawCostumers() {

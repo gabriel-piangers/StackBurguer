@@ -23,7 +23,7 @@ void InitAVL(string path) {
     string order;
     while(getline(file, order)) {
         getline(file, order);
-        float patience = RandomFloat(45.0f, 90.0f);       
+        float patience = RandomFloat(PATIENCE_MIN, PATIENCE_MAX);       
         avl.insert(order, patience);
     }
 

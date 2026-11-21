@@ -5,7 +5,8 @@ Ingredient sellingItems[] = {BREAD_B, BREAD_T, KETCHUP, MUSTARD, PICKLES, LETTUC
 DynamicVector<ShopItem> shopItems;
 
 void InitShop() {
-    for(int i=0; i<sizeof(sellingItems)/sizeof(Ingredient); i++) {
+    shopItems.clear();
+    for(int i=0; i < sizeof(sellingItems)/sizeof(Ingredient); i++) {
         int split = 7;
         if(i<split) {
             ShopItem item({CARD_TABLE.x - (GAME_MARGIN + SHOP_ITEM_W), CARD_TABLE.y + (SHOP_ITEM_H + SHOP_ITEM_PAD)*i}, sellingItems[i]);
