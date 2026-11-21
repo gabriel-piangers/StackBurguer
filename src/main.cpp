@@ -124,7 +124,10 @@ void AddScore(float score) {
     game.score += score;
 }
 
-int main () {
+int main (int argc, char* argv[]) {
+    string ordersPath = argc >= 2 ? argv[1] : "data/pedidos.txt";
+    string historyPath = argc >= 3 ? argv[2] : "data/historico.txt"; 
+
     // Initialization
     InitWindow(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()), "My first RAYLIB program!");
     SetTargetFPS(60);
@@ -133,8 +136,8 @@ int main () {
 
     InitGame();
     LoadTextures();
-    InitHistory("");
-    InitAVL("data/pedidos.txt");    
+    InitHistory(historyPath);
+    InitAVL(ordersPath);    
 
     while (!WindowShouldClose()) {
         if(!IsWindowFocused()) {
