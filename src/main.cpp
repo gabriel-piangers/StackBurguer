@@ -19,6 +19,17 @@ Rectangle MENU_DIV;
 Rectangle RETURN_BTN_REC;
 Rectangle MENU_BTN_REC;
 
+// Menu buttons and text
+AnimatedText gameTitle(WAVING, {0, 0}, "Dado Burguer", 90.0f, 0.2f, 1.8f, 64.0f, GOLD);
+AnimatedText gameOverTitle(SHAKING, {0, 0}, "Game Over", 40.0f, 0.3f, 1.0f, 64.0f, RED);
+Button playBtn({0, 0, 0, 0}, "New Game", []() {curGameState = START_GAME;});
+Button historyBtn({0, 0, 0, 0}, "History", []() {curGameState = HISTORY;});
+Button exitBtn({0, 0, 0, 0}, "Exit", []() {curGameState = EXIT;});
+Button continueBtn({0, 0, 0, 0}, "Continue", []() {curGameState = IN_GAME;});
+Button menuBtn({0, 0, 0, 0}, "Return to Menu", []() {curGameState = MAIN_MENU;});
+Button playAgainBtn({0, 0, 0, 0}, "Play again", []() {curGameState = START_GAME;});
+Button returnBtn({0, 0, 0, 0}, "Return", []() {curGameState = MAIN_MENU;});
+
 Texture2D BREAD_B_TEXTURE;
 Texture2D BREAD_T_TEXTURE;
 Texture2D KETCHUP_TEXTURE;
@@ -112,6 +123,19 @@ void InitGame() {
     CARD_TABLE = {(GetMonitorWidth(curMon) - TABLE_W)/2.0f, COSTUMER_DIV_H + GAME_MARGIN + TABLE_PAD, TABLE_W, TABLE_H};
     RETURN_BTN_REC = {MENU_DIV.x, MENU_DIV.y + MENU_DIV_H + 20.0f, 100.0f, 50.0f};
     MENU_BTN_REC = {(GetScreenWidth() - 300)/2.0f, (GetScreenHeight() - 50)/2.0f, 300.0f, 50.0f};
+
+    gameTitle.setPos(GetTitlePos(gameTitle.text, gameTitle.fontSize));
+    gameOverTitle.setPos(GetTitlePos(gameOverTitle.text, gameOverTitle.fontSize));
+    playBtn.rec = MENU_BTN_REC;
+    historyBtn.rec = MENU_BTN_REC;
+    historyBtn.rec.y += 70.0f;
+    exitBtn.rec = MENU_BTN_REC;
+    exitBtn.rec.y += 2*70.0f;
+    continueBtn.rec = MENU_BTN_REC;
+    menuBtn.rec = MENU_BTN_REC;
+    menuBtn.rec.y += 70.0f;
+    playAgainBtn.rec = MENU_BTN_REC;
+    returnBtn.rec = RETURN_BTN_REC;
 }
 
 void CloseGame() {
@@ -146,23 +170,19 @@ int main (int argc, char* argv[]) {
 
         switch (curGameState) {
         case MAIN_MENU: {
-            Button playBtn(MENU_BTN_REC, "New Game", []() {curGameState = START_GAME;});
-            Button historyBtn(MENU_BTN_REC, "History", []() {curGameState = HISTORY;});
-            historyBtn.rec.y += 70.0f;
-            Button exitBtn(MENU_BTN_REC, "Exit", []() {curGameState = EXIT;});
-            exitBtn.rec.y += 2*70.0f;
-            Button buttons[] = {playBtn, historyBtn, exitBtn};
-
             // Updated
-            for(int i=0; i<3; i++) buttons[i].update();
+            gameTitle.update();
+            playBtn.update();
+            historyBtn.update();
+            exitBtn.update();
 
             // Draw
             BeginDrawing();
                 ClearBackground(BACKGROUND_COLOR);
-                DrawTitle("DadoBurguer");
-                for(int i=0; i<3; i++) {
-                    buttons[i].draw();
-                } 
+                gameTitle.draw();
+                playBtn.draw();
+                historyBtn.draw();
+                exitBtn.draw();
                     
             EndDrawing();
 
@@ -205,10 +225,6 @@ int main (int argc, char* argv[]) {
             break;
         }
         case GAME_PAUSED: {
-            Button continueBtn(MENU_BTN_REC, "Continue", []() {curGameState = IN_GAME;});
-            Button menuBtn(MENU_BTN_REC, "Return to Menu", []() {curGameState = MAIN_MENU;});
-            menuBtn.rec.y += 70.0f;
-
             // Update
             continueBtn.update();
             menuBtn.update();
@@ -223,29 +239,24 @@ int main (int argc, char* argv[]) {
 
             break;
         }
-        case GAME_OVER: {
-            Button playBtn(MENU_BTN_REC, "Play again", []() {curGameState = START_GAME;});
-            Button menuBtn(MENU_BTN_REC, "Return to Menu", []() {curGameState = MAIN_MENU;});
-            menuBtn.rec.y += 70.0f;
-            
+        case GAME_OVER: {            
             // Update
-            playBtn.update();
+            gameOverTitle.update();
+            playAgainBtn.update();
             menuBtn.update();
 
             // Draw
             BeginDrawing();
                 ClearBackground(BACKGROUND_COLOR);
-                DrawTitle("Game Over");
-                DrawText(TextFormat("Score: %.2f", game.score), playBtn.rec.x, playBtn.rec.y - 50.0f, 24, RED);
-                playBtn.draw();
+                DrawText(TextFormat("Score: %.2f", game.score), playAgainBtn.rec.x, playAgainBtn.rec.y - 50.0f, 24, RED);
+                gameOverTitle.draw();
+                playAgainBtn.draw();
                 menuBtn.draw();
             EndDrawing();
 
             break;
         }
         case HISTORY: {
-            Button returnBtn(RETURN_BTN_REC, "Return", []() {curGameState = MAIN_MENU;});
-
             // Update
             returnBtn.update();
             UpdateHistory();

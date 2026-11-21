@@ -23,6 +23,7 @@ extern Rectangle COSTUMER_DIV;
 extern Rectangle CARD_TABLE;
 extern Rectangle MENU_DIV;
 extern Rectangle RETURN_BTN_REC;
+extern Rectangle MENU_BTN_REC;
 
 // Textures
 extern Texture2D BREAD_B_TEXTURE;

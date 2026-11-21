@@ -2,12 +2,18 @@
 #define UI_H
 
 #include "constants.h"
+#include "dynamic_vector.h"
 
 #define HOVER_COLOR (Color) {32, 32, 32, 255}
 #define INACTIVE_COLOR (Color) {0, 0, 0, 255}
 #define TITLE_HEIGHT 100
 #define TITLE_FONT_SIZE 48.0f
 #define TEXT_POP_UP_DELTA 80.0f
+
+enum TextAnimation {
+    WAVING,
+    SHAKING,
+};
 
 struct Button {
     Rectangle rec;
@@ -46,8 +52,34 @@ struct TextPopUp {
     bool keepAlive();
 };
 
+struct AnimatedText {
+    TextAnimation animation;
+    Vector2 pos;
+    DynamicVector<Vector2> glyphStartPos;
+    DynamicVector<Vector2> glyphPos;
+    std::string text;
+    float time;
+    float delta;
+    float offset;
+    float duration;
+    float fontSize;
+    Color color;
+
+    AnimatedText(): text("") {}
+
+    AnimatedText(TextAnimation _animation, Vector2 _pos, std::string _text, float _delta = 30.0f, float _offset = 1.0f, float _duration = 2.0f, float _fs = 18.0f, Color _color = WHITE):
+        animation(_animation), pos(_pos), glyphStartPos(), glyphPos(), text(_text), time(0.0f), delta(_delta), offset(_offset), duration(_duration), fontSize(_fs), color(_color) {
+        this->setPos(_pos);
+    } 
+
+    void draw();
+    void update();
+    void setPos(Vector2 nPos);
+};
+
 // Exports
 void DrawTitle(std::string text);
+Vector2 GetTitlePos(std::string text, float fs = TITLE_FONT_SIZE);
 void DrawHUD(float time, float score);
 
 #endif
