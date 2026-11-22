@@ -38,7 +38,7 @@ struct Card{
     Card() : active(false) {} // default constructor
 
     Card(Vector2 _pos, Ingredient _type): 
-        pos({_pos.x, _pos.y}), lastPos({_pos.x, _pos.y}), offset({0, 0}), type(_type), picked(false), hover(false), active(true), rotten(false), id(idCount), size(1), timeCounter(0.0f), next(nullptr), prev(nullptr)  {}
+        pos({_pos.x, _pos.y}), offset({0, 0}), type(_type), picked(false), hover(false), active(true), rotten(false), id(idCount), size(1), timeCounter(0.0f), next(nullptr), prev(nullptr)  {}
 
     // Getters
     std::string getTitle();
@@ -82,6 +82,7 @@ struct CardList {
     CardList(): first(nullptr), last(nullptr), map(), size(0) {}
 
     void insert(Card* c);
+    void insertAfter(Card* c, int prevId);
     Card* remove(int id);
     void clear();
     void propagate(std::function<void(Card*, int)> f, bool reverse = false);

@@ -1,5 +1,7 @@
 #include "cards.h"
 #include "costumer.h"
+#include "dynamic_vector.h"
+#include "raymath.h"
 
 using namespace std;
 
@@ -35,6 +37,15 @@ void PickCard(Card* c) {
 }
 
 void UpdateCards() {
+    if(IsKeyPressed(KEY_APOSTROPHE)) {
+        cout << "cards size: " << cards.size << "\n";
+        auto f = [](Card* c, int i) {
+            cout << c->id << " -> ";
+        };
+        cards.propagate(f);
+        cout << "\n";
+    }
+
     auto f = [](Card* c, int i) {
         if(c->active) c->update(&cardPicked);
     };
@@ -220,7 +231,7 @@ void Card::place(Card** cPicked) {
 
     auto f = [this, valid](Card* c, int i) {
         c->picked = false;
-        cards.insert(c);
+        cards.insertAfter(c, c->prev ? c->prev->id : -1);
         if(!valid) {
             c->pos.x = this->lastPos.x; 
             c->pos.y = this->lastPos.y + i*CARD_HEADER_H;
@@ -303,6 +314,23 @@ void CardList::insert(Card* c) {
         this->last->next = node;
         this->last = node;
     }
+    map.insert(node->card->id, node);
+    this->size++;
+}
+
+void CardList::insertAfter(Card* c, int prevId) {
+    CardNode** nodeptr = this->map.get(prevId);
+    if(!nodeptr) return this->insert(c);
+
+    CardNode* prev = *nodeptr;
+    if(!prev || !prev->next) return this->insert(c);
+
+    CardNode* node = new CardNode(c);
+    node->prev = prev;
+    node->next = prev->next;
+    prev->next = node;
+    node->next->prev = node;
+
     map.insert(node->card->id, node);
     this->size++;
 }
