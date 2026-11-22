@@ -232,7 +232,7 @@ void Card::place(Card** cPicked) {
 
 
 void Card::pickup(Card** cPicked) {
-    this->lastPos = this->pos;
+    this->lastPos = {Clamp(this->pos.x, CARD_TABLE.x, CARD_TABLE.x + CARD_TABLE.width - CARD_W), Clamp(this->pos.y, CARD_TABLE.y, CARD_TABLE.y + CARD_TABLE.height - CARD_H)};
     this->lastPrev = this->prev;
     *cPicked = this;
     if(this->prev) {
