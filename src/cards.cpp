@@ -351,12 +351,12 @@ Card* CardList::remove(int id) {
     if(node->next) node->next->prev = node->prev;
     else this->last = node->prev;
     
-    node->prev = nullptr;
-    node->next = nullptr;  
-    
+    Card* card = node->card;
+    delete node;
+
     this->size--;   
     this->map.remove(id);
-    return node->card;
+    return card;
 }
 
 void CardList::clear() {
@@ -370,11 +370,14 @@ void CardList::clear() {
 }
 
 void CardList::propagate(function<void(Card*, int)> f, bool reverse) {
-    CardNode* cur = reverse ? this->last : this->first;
-    int i=0;
-    while(cur) {
-        f(cur->card, i);
-        cur = reverse ? cur->prev : cur->next;
-        i++;
+    DynamicVector<int> ids;
+    for(CardNode* cur = reverse ? this->last : this->first; cur; cur = reverse ?cur->prev : cur->next) {
+        ids.insert(cur->card->id);
+    }
+
+    
+    for(int i=0; i<ids.size; i++) {
+        CardNode** nodeptr = this->map.get(ids[i]);
+        if(nodeptr && *nodeptr) f((*nodeptr)->card, i);
     }
 }
