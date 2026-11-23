@@ -153,7 +153,7 @@ int main (int argc, char* argv[]) {
     string historyPath = argc >= 3 ? argv[2] : "data/historico.txt"; 
 
     // Initialization
-    InitWindow(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()), "My first RAYLIB program!");
+    InitWindow(GetMonitorWidth(GetCurrentMonitor()), GetMonitorHeight(GetCurrentMonitor()), "Dado Burguer");
     SetTargetFPS(60);
     ToggleBorderlessWindowed();
     SetExitKey(KEY_NULL);
