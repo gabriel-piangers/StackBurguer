@@ -17,7 +17,7 @@ bool sortingAsc = false;
 
 Button noneFieldBtn({0}, "#", []() {
     selectedField = NONE;
-    InitHistory("data/historico.txt"); // change later
+    InitHistory(filePath); // change later
 });
 Button nameFieldBtn({0}, "Name", []() {
     selectedField = NAME;
