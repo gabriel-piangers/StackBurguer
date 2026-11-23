@@ -161,10 +161,11 @@ void Costumer::update() {
 }
 
 float Costumer::score() {
+    float score = this->difficulty * this->state;
+
     this->state = LEAVING;
     this->timer = 0.0f;
 
-    float score = this->difficulty * this->state;
     string scoreStr = "+" + to_string((int)(score)) + "." + to_string((int)((score - (int)score)*100.0f));
     TextPopUp popUp(GetMousePosition(), scoreStr);
     popUps.insert(popUp);
