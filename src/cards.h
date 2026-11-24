@@ -38,7 +38,9 @@ struct Card{
     Card() : active(false) {} // default constructor
 
     Card(Vector2 _pos, Ingredient _type): 
-        pos({_pos.x, _pos.y}), offset({0, 0}), type(_type), picked(false), hover(false), active(true), rotten(false), id(idCount), size(1), timeCounter(0.0f), next(nullptr), prev(nullptr)  {}
+        pos({_pos.x, _pos.y}), offset({0, 0}), type(_type), picked(false), hover(false), active(true), rotten(false), id(idCount), size(1), timeCounter(0.0f), next(nullptr), prev(nullptr)  {
+            this->setType(_type);
+        }
 
     // Getters
     std::string getTitle();
