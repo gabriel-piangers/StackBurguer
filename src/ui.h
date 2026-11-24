@@ -57,6 +57,7 @@ struct AnimatedText {
     Vector2 pos;
     DynamicVector<Vector2> glyphStartPos;
     DynamicVector<Vector2> glyphPos;
+    DynamicVector<Vector2> glyphDelta;
     std::string text;
     float time;
     float delta;
@@ -68,13 +69,13 @@ struct AnimatedText {
     AnimatedText(): text("") {}
 
     AnimatedText(TextAnimation _animation, Vector2 _pos, std::string _text, float _delta = 30.0f, float _offset = 1.0f, float _duration = 2.0f, float _fs = 18.0f, Color _color = WHITE):
-        animation(_animation), pos(_pos), glyphStartPos(), glyphPos(), text(_text), time(0.0f), delta(_delta), offset(_offset), duration(_duration), fontSize(_fs), color(_color) {
-        this->setPos(_pos);
+        animation(_animation), pos(_pos), glyphStartPos(), glyphPos(), glyphDelta(), text(_text), time(0.0f), delta(_delta), offset(_offset), duration(_duration), fontSize(_fs), color(_color) {
+        this->init(_pos);
     } 
 
     void draw();
     void update();
-    void setPos(Vector2 nPos);
+    void init(Vector2 _pos);
 };
 
 // Exports

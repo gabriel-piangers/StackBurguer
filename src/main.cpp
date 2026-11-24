@@ -21,7 +21,7 @@ Rectangle MENU_BTN_REC;
 
 // Menu buttons and text
 AnimatedText gameTitle(WAVING, {0, 0}, "Dado Burguer", 90.0f, 0.2f, 1.8f, 64.0f, GOLD);
-AnimatedText gameOverTitle(SHAKING, {0, 0}, "Game Over", 40.0f, 0.3f, 1.0f, 64.0f, RED);
+AnimatedText gameOverTitle(SHAKING, {0, 0}, "Game Over", 30.0f, 0.02f, 0.15f, 64.0f, RED);
 Button playBtn({0, 0, 0, 0}, "New Game", []() {curGameState = START_GAME;});
 Button historyBtn({0, 0, 0, 0}, "History", []() {curGameState = HISTORY;});
 Button exitBtn({0, 0, 0, 0}, "Exit", []() {curGameState = EXIT;});
@@ -124,8 +124,8 @@ void InitGame() {
     RETURN_BTN_REC = {MENU_DIV.x, MENU_DIV.y + MENU_DIV_H + 20.0f, 100.0f, 50.0f};
     MENU_BTN_REC = {(GetScreenWidth() - 300)/2.0f, (GetScreenHeight() - 50)/2.0f, 300.0f, 50.0f};
 
-    gameTitle.setPos(GetTitlePos(gameTitle.text, gameTitle.fontSize));
-    gameOverTitle.setPos(GetTitlePos(gameOverTitle.text, gameOverTitle.fontSize));
+    gameTitle.init(GetTitlePos(gameTitle.text, gameTitle.fontSize));
+    gameOverTitle.init(GetTitlePos(gameOverTitle.text, gameOverTitle.fontSize));
     playBtn.rec = MENU_BTN_REC;
     historyBtn.rec = MENU_BTN_REC;
     historyBtn.rec.y += 70.0f;

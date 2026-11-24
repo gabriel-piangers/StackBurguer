@@ -89,17 +89,19 @@ void AnimatedText::update() {
     case SHAKING:{
         for (unsigned int i = 0; i < this->text.size(); i++) {
             float curTime = fmod(this->time + i*this->offset, this->duration);;
-            float deltaX = RandomFloat(-this->delta/10.0f, this->delta/10.0f);
-            float deltaY = RandomFloat(-this->delta/10.0f, this->delta/10.0f);
-            float halfDuration = this->duration/2.0f;
+            if(curTime <= GetFrameTime()) {
+                this->glyphDelta[i].x = RandomFloat(-this->delta/10.0f, this->delta/10.0f);
+                this->glyphDelta[i].y = RandomFloat(-this->delta/10.0f, this->delta/10.0f);
+            }
 
+            float halfDuration = this->duration/2.0f;
             if (curTime < (halfDuration)) {
-                glyphPos[i].x = EaseLinearNone(curTime, glyphStartPos[i].x, deltaX, halfDuration);
-                glyphPos[i].y = EaseLinearNone(curTime, this->pos.y, deltaY, halfDuration);
+                glyphPos[i].x = EaseLinearNone(curTime, this->glyphStartPos[i].x, this->glyphDelta[i].x, halfDuration);
+                glyphPos[i].y = EaseLinearNone(curTime, this->pos.y, this->glyphDelta[i].y, halfDuration);
             }
             else {
-                glyphPos[i].x = EaseLinearNone(curTime - halfDuration, glyphStartPos[i].x + deltaX, -deltaX, halfDuration);
-                glyphPos[i].y = EaseLinearNone(curTime - halfDuration, this->pos.y + deltaY, -deltaY, halfDuration);
+                glyphPos[i].x = EaseLinearNone(curTime - halfDuration, this->glyphStartPos[i].x + this->glyphDelta[i].x, -this->glyphDelta[i].x, halfDuration);
+                glyphPos[i].y = EaseLinearNone(curTime - halfDuration, this->pos.y + this->glyphDelta[i].y, -this->glyphDelta[i].y, halfDuration);
             }
         }
     }
@@ -108,8 +110,8 @@ void AnimatedText::update() {
     }
 }
 
-void AnimatedText::setPos(Vector2 nPos) {
-    this->pos = nPos;
+void AnimatedText::init(Vector2 _pos) {
+    this->pos = _pos;
     glyphStartPos.clear();
     glyphPos.clear();
     float offsetX = 0.0f;
@@ -117,5 +119,9 @@ void AnimatedText::setPos(Vector2 nPos) {
         glyphPos.insert({this->pos.x + offsetX, this->pos.y});
         glyphStartPos.insert({this->pos.x + offsetX, this->pos.y});
         offsetX += MeasureText(TextSubtext(this->text.c_str(), i, 1), this->fontSize) + 0.1*this->fontSize;
+        
+        if(this->animation == SHAKING) {
+            glyphDelta.insert({RandomFloat(-this->delta/10.0f, this->delta/10.0f),  RandomFloat(-this->delta/10.0f, this->delta/10.0f)});
+        }
     }
 }
