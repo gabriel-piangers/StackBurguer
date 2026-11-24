@@ -1,5 +1,7 @@
 #include "event_system.h"
 
+using namespace std;
+
 Heap<Event> hp([](Event& e1, Event& e2){return e1.time < e2.time;});
 float curTime = 0.0f;
 
@@ -17,6 +19,11 @@ void Unschedule(int id) {
 }
 
 void UpdateEventSystem() {
+    if(IsKeyPressed(KEY_L)) { // Debugging
+        cout << "\n--- Event System ---\n";
+        cout << "Size: " << hp.size << "\n"; 
+    }
+
     curTime += GetFrameTime();
 
     while(!hp.empty() && hp.top().time <= curTime) {

@@ -75,6 +75,14 @@ void DrawCostumers() {
 }
 
 void UpdateCostumers() {
+    if(IsKeyPressed(KEY_L)) {
+        cout << "\n --- Costumer Queue ---\n";
+        cout << "Size: " << costumerQueue.size << "\n";
+
+        cout << "\n --- Score Pop-ups ---\n";
+        cout << "Size: " << popUps.size << "\n";
+    }
+
     for(int i=0; i<COSTUMER_AMOUNT; i++) costumers[i].update();
     for(int i=0; i<popUps.size; i++) {
         if(!popUps[i].keepAlive()) popUps.remove(i);

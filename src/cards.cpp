@@ -37,12 +37,19 @@ void PickCard(Card* c) {
 }
 
 void UpdateCards() {
-    if(IsKeyPressed(KEY_APOSTROPHE)) {
-        cout << "cards size: " << cards.size << "\n";
+    if(IsKeyPressed(KEY_L)) { // Debugging
+        cout << "\n--- CardList ---\n";
+        cout << "List size: " << cards.size << "\n";
         auto f = [](Card* c, int i) {
             cout << c->id << " -> ";
         };
         cards.propagate(f);
+
+        // // Hash debugging
+        // cout << "\n";
+        // cout << "Hash size: " << cards.map.size << "\n";
+        // cards.map.print();
+
         cout << "\n";
     }
 
